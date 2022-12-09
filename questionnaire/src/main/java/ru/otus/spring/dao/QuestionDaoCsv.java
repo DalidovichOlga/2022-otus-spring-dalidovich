@@ -9,8 +9,8 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 public class QuestionDaoCsv implements IQuestionDao {
-    List<Question> questionList = new ArrayList<>();
-    boolean initiated = false;
+    private List<Question> questionList = new ArrayList<>();
+    private boolean initiated = false;
     private static String fileName; /// "questionlist.csv"
 
     public QuestionDaoCsv(String fileName)
