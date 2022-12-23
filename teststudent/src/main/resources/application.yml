@@ -1,0 +1,9 @@
+settings:
+  local: ru-RU
+csvfile:
+  path: questionlist.csv
+attempts:
+  number: 5
+spring:
+  messages:
+    basename: i18n/messages
