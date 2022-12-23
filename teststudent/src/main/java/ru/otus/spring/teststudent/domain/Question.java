@@ -2,9 +2,9 @@ package ru.otus.spring.teststudent.domain;
 
 public class Question {
 
-    private String questionText;
-    private String variants;
-    private String trueAnswer;
+    private final String questionText;
+    private final String variants;
+    private final String trueAnswer;
 
     public Question(String questionText, String variants, String trueAnswer) {
         this.questionText = questionText;

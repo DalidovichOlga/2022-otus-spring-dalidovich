@@ -1,7 +1,7 @@
 package ru.otus.spring.teststudent.domain;
 
 public class Student {
-    private String name;
+    private final String name;
     private int  score;
 
     public Student(String name) {
