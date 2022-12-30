@@ -1,0 +1,17 @@
+settings:
+  local:
+csvfile:
+  path: questionlist.csv
+attempts:
+  number: 2
+spring:
+  messages:
+    basename: i18n/messages
+  shell:
+    script:
+      spring:
+        shell:
+          script: false
+    interactive:
+      enabled: false
+
