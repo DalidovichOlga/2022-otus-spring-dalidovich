@@ -8,7 +8,7 @@ import ru.otus.spring.booklib.error.BookError;
 
 import java.util.List;
 
-public interface LibraryService {
+public interface BookService {
 
     List<BookView> getAllBook();
 
@@ -19,10 +19,6 @@ public interface LibraryService {
     void removeBook(Long id) throws BookError;
 
     Book getById(Long id) throws BookError;
-
-    List<Comment> getComment(Long id) throws BookError;
-
-    void commentBook(Long id, String nick, String text) throws BookError;
 
     List<Book> getBookByAuthor(Long id, String name) throws BookError;
 }

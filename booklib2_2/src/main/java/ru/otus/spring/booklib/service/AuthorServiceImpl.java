@@ -7,7 +7,6 @@ import ru.otus.spring.booklib.dao.AuthorRepositoryJpa;
 import ru.otus.spring.booklib.dao.BookRepositoryJpa;
 import ru.otus.spring.booklib.domain.Author;
 import ru.otus.spring.booklib.domain.Book;
-import ru.otus.spring.booklib.domain.BookView;
 import ru.otus.spring.booklib.error.AuthorError;
 
 import java.util.List;

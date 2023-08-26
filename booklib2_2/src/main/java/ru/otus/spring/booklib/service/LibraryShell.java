@@ -2,7 +2,6 @@ package ru.otus.spring.booklib.service;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.MessageSource;
-import ru.otus.spring.booklib.domain.Author;
 import ru.otus.spring.booklib.domain.Book;
 import ru.otus.spring.booklib.domain.Comment;
 import ru.otus.spring.booklib.domain.Genre;
@@ -20,27 +19,32 @@ import java.util.stream.Collectors;
 
 @ShellComponent
 public class LibraryShell {
-    private final LibraryService service;
+    private final BookService service;
     private final AuthorService authorService;
     private final GenreService genreService;
     private final MessageSource messageSource;
+    private final CommentService commentService;
     private final Locale locale;
 
-    public LibraryShell(LibraryService service,
-                        AuthorService authorService, GenreService genreService, MessageSource messageSource,
+    public LibraryShell(BookService service,
+                        AuthorService authorService,
+                        GenreService genreService,
+                        MessageSource messageSource,
+                        CommentService commentService,
                         @Value("${settings.local}") String local) {
 
         this.service = service;
         this.authorService = authorService;
         this.genreService = genreService;
         this.messageSource = messageSource;
+        this.commentService = commentService;
         locale = Locale.forLanguageTag(local);
 
     }
 
 
     @ShellMethod(value = "Modify genre", key = {"gmod", "genreModify"})
-    public String ganreModify(long id, String name) {
+    public String genreModify(long id, String name) {
         Genre g = new Genre(name, id);
         String textResult = "";
         try {
@@ -188,20 +192,28 @@ public class LibraryShell {
         return stringList;
     }
 
-    @ShellMethod(value = "get book with comment", key = {"bookcomg", "bookcomments"})
+    @ShellMethod(value = "get book with comment", key = {"bookcom", "bookcomments"})
     public void getBookComment(Long id) {
         Book book = null;
         List<Comment> lstComment = null;
 
         try {
             book = service.getById(id);
-            lstComment = service.getComment(id);
+            lstComment = commentService.getComment(id);
         } catch (BookError bookError) {
             System.out.println(messageSource.getMessage(bookError.getErrorText(),
                     new String[]{bookError.getDetails()}, locale));
         }
         if (book != null) {
-            System.out.print(book);
+            String bookInf=messageSource.getMessage("bookname",
+                    new String[]{}, locale) + " " + book.getTitle() + "\n\r"+
+                    messageSource.getMessage("bookauthor",
+                            new String[]{}, locale) + " " + book.getAuthor().getFullName() + "\n\r"+
+                    messageSource.getMessage("bookgenre",
+                            new String[]{}, locale) + " " + book.getGenre().getGenreName() ;
+            System.out.println(bookInf);
+            System.out.println(messageSource.getMessage("comments",
+                    new String[]{}, locale) );
             lstComment.forEach(System.out::print);
         }
 
@@ -211,7 +223,7 @@ public class LibraryShell {
     public String commentBook(Long id, String nick, String text) {
         String textResult = "";
         try {
-            service.commentBook(id, nick, text);
+            commentService.commentBook(id, nick, text);
             textResult = messageSource.getMessage("commentsuccessadd",
                     new String[]{}, locale);
 
