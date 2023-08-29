@@ -7,6 +7,7 @@ import ru.otus.spring.booklib.domain.Comment;
 import ru.otus.spring.booklib.domain.Genre;
 import ru.otus.spring.booklib.error.AuthorError;
 import ru.otus.spring.booklib.error.BookError;
+import ru.otus.spring.booklib.error.CommentError;
 import ru.otus.spring.booklib.error.GenreError;
 import org.springframework.shell.standard.ShellComponent;
 import org.springframework.shell.standard.ShellMethod;
@@ -197,13 +198,20 @@ public class LibraryShell {
         Book book = null;
         List<Comment> lstComment = null;
 
+
         try {
             book = service.getById(id);
             lstComment = commentService.getComment(id);
-        } catch (BookError bookError) {
+        } catch (CommentError commentError) {
+            System.out.println(messageSource.getMessage(commentError.getCode(),
+                    new String[]{commentError.getDetails()}, locale));
+        }
+        catch (BookError bookError) {
             System.out.println(messageSource.getMessage(bookError.getErrorText(),
                     new String[]{bookError.getDetails()}, locale));
         }
+
+
         if (book != null) {
             String bookInf=messageSource.getMessage("bookname",
                     new String[]{}, locale) + " " + book.getTitle() + "\n\r"+
@@ -214,7 +222,12 @@ public class LibraryShell {
             System.out.println(bookInf);
             System.out.println(messageSource.getMessage("comments",
                     new String[]{}, locale) );
-            lstComment.forEach(System.out::print);
+            int number = 1;
+            for (Comment comment :lstComment
+                 ) {
+                System.out.print(String.valueOf(number)+") "+comment);
+                number++;
+            }
         }
 
     }
@@ -227,11 +240,25 @@ public class LibraryShell {
             textResult = messageSource.getMessage("commentsuccessadd",
                     new String[]{}, locale);
 
-        } catch (BookError bookError) {
-            textResult = messageSource.getMessage(bookError.getErrorText(),
+        } catch (CommentError bookError) {
+            textResult = messageSource.getMessage(bookError.getCode(),
                     new String[]{bookError.getDetails()}, locale);
         }
         return textResult;
     }
 
+    @ShellMethod(value = "delete comment", key = {"comdel", "deletebookcomments"})
+    public String deleteCommentBook(Long bookId, int numberComment) {
+        String textResult = "";
+        try {
+            commentService.deleteComment(bookId, numberComment);
+            textResult = messageSource.getMessage("commentsuccessdel",
+                    new String[]{}, locale);
+
+        } catch (CommentError bookError) {
+            textResult = messageSource.getMessage(bookError.getCode(),
+                    new String[]{bookError.getDetails()}, locale);
+        }
+        return textResult;
+    }
 }

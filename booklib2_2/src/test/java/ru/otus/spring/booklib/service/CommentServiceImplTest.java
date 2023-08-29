@@ -7,12 +7,14 @@ import org.springframework.boot.test.context.SpringBootTest;
 import ru.otus.spring.booklib.domain.Book;
 import ru.otus.spring.booklib.domain.Comment;
 import ru.otus.spring.booklib.error.BookError;
+import ru.otus.spring.booklib.error.CommentError;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 @SpringBootTest
 public class CommentServiceImplTest {
@@ -20,6 +22,7 @@ public class CommentServiceImplTest {
     private CommentService commentService;
     @Autowired
     private BookService service;
+
     @Test
     @DisplayName("Добавить книгу и комментарии к ней")
     void createBookWithComment() {
@@ -41,12 +44,43 @@ public class CommentServiceImplTest {
         try {
             lstComment = commentService.getComment(bookId);
 
-        } catch (BookError bookError) {
+        } catch (CommentError bookError) {
             bookError.printStackTrace();
         }
         assertThat(lstComment.size()).isEqualTo(2);
 
         assertDoesNotThrow(() -> service.removeBook(bookId));
+
+    }
+
+
+    @Test
+    @DisplayName("прокоментировать книгу и удалить комментарии к ней")
+    void commentBookAndDeleteComment() {
+        Long bookId = 1L;
+
+        assertDoesNotThrow(() -> commentService.commentBook(bookId, "Вася", "Книга не понравилась, слишком много букв"));
+        assertDoesNotThrow(() -> commentService.commentBook(bookId, "Петя", "Очень интересная книга. Автор пиши еще."));
+
+        List<Comment> lstComment = new ArrayList<>();
+        try {
+            lstComment = commentService.getComment(bookId);
+
+        } catch (CommentError bookError) {
+            bookError.printStackTrace();
+        }
+        assertThat(lstComment.size()).isEqualTo(2);
+        assertDoesNotThrow(() -> commentService.deleteComment(bookId, 1));
+
+        try {
+            lstComment = commentService.getComment(bookId);
+
+        } catch (CommentError bookError) {
+            bookError.printStackTrace();
+        }
+        assertThat(lstComment.size()).isEqualTo(1);
+
+        assertThrows(CommentError.class, () -> commentService.deleteComment(bookId, 3));
 
     }
 }

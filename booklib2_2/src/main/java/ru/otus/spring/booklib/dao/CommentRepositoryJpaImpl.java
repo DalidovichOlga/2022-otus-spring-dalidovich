@@ -1,6 +1,7 @@
 package ru.otus.spring.booklib.dao;
 
 import org.springframework.stereotype.Repository;
+import ru.otus.spring.booklib.domain.Author;
 import ru.otus.spring.booklib.domain.Comment;
 
 import javax.persistence.EntityManager;
@@ -39,5 +40,9 @@ public class CommentRepositoryJpaImpl implements CommentRepositoryJpa {
                 "where s.bookId = :id");
         query.setParameter("id", id);
         query.executeUpdate();
+    }
+
+    public void remove(Comment comment) {
+        em.remove(comment);
     }
 }

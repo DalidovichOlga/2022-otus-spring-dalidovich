@@ -11,4 +11,6 @@ public interface CommentRepositoryJpa {
     List<Comment> getByBookId(long id);
 
     void deleteByBookId(long id);
+
+    void remove(Comment comment);
 }

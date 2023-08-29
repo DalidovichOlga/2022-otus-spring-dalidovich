@@ -8,6 +8,7 @@ import ru.otus.spring.booklib.dao.CommentRepositoryJpa;
 import ru.otus.spring.booklib.domain.Book;
 import ru.otus.spring.booklib.domain.Comment;
 import ru.otus.spring.booklib.error.BookError;
+import ru.otus.spring.booklib.error.CommentError;
 
 import java.util.List;
 
@@ -26,19 +27,29 @@ public class CommentServiceImpl implements CommentService {
 
     @Transactional
     @Override
-    public List<Comment> getComment(Long id) throws BookError {
-        final Book book = bookRepository.getById(id).orElseThrow(() -> new BookError("BOOK_NOT_FOUND", "id =" + String.valueOf(id)));
+    public List<Comment> getComment(Long id) throws CommentError {
+        final Book book = bookRepository.getById(id).orElseThrow(() -> new CommentError("BOOK_NOT_FOUND", "id =" + String.valueOf(id)));
         List<Comment> comments = commentRepositoryJpa.getByBookId(id);
         return comments;
     }
 
     @Transactional
     @Override
-    public void commentBook(Long id, String nick, String text) throws BookError {
-        Book book = bookRepository.getById(id).orElseThrow(() -> new BookError("BOOK_NOT_FOUND", "id =" + String.valueOf(id)));
+    public void commentBook(Long id, String nick, String text) throws CommentError {
+        Book book = bookRepository.getById(id).orElseThrow(() -> new CommentError("BOOK_NOT_FOUND", "id =" + String.valueOf(id)));
         if ("".equals(text))
-            throw new BookError("BOOK_COMMENT_EMPTY", "id =" + String.valueOf(id));
+            throw new CommentError("BOOK_COMMENT_EMPTY", "id =" + String.valueOf(id));
         commentRepositoryJpa.insert(new Comment(nick, text, id));
 
+    }
+
+    @Transactional
+    @Override
+    public void deleteComment(Long id, Integer commentNumber) throws CommentError {
+        Book book = bookRepository.getById(id).orElseThrow(() -> new CommentError("BOOK_NOT_FOUND", "id =" + String.valueOf(id)));
+        List<Comment> comments = commentRepositoryJpa.getByBookId(id);
+        if (commentNumber < 1 || comments.size() < commentNumber)
+            throw new CommentError("NUMBER_INCORRECT", String.valueOf(commentNumber));
+        commentRepositoryJpa.remove(comments.get(commentNumber - 1));
     }
 }
