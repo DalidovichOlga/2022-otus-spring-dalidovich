@@ -164,7 +164,7 @@ class BookServiceImplTest {
         assertThat(allAuthor.stream().filter((g) -> g.getFullName().equals("88877666 77765 77777")).count()).isEqualTo(1);
         assertThat(allAuthor.stream().filter((g) -> g.getShortName().equals("88877666 7.7.")).count()).isEqualTo(1);
         Author id = allAuthor.stream().filter((g) -> g.getShortName().equals("88877666 7.7.")).findAny().get();
-        assertDoesNotThrow(() -> authorService.deleteAuthor(id.getId(), ""));
+        assertDoesNotThrow(() -> authorService.deleteAuthor(id.getId()));
         allAuthor = authorService.getAllAuthor();
         assertThat(allAuthor.stream().filter((g) -> g.getFullName().equals("88877666 77765 77777")).count()).isEqualTo(0);
 

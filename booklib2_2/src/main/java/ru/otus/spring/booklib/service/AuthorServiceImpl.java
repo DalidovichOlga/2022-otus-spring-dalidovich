@@ -14,43 +14,28 @@ import java.util.Optional;
 
 @Service
 public class AuthorServiceImpl implements AuthorService {
-    private final AuthorRepositoryJpa authorDao;
-    private final BookRepositoryJpa bookDao;
+    private final AuthorRepositoryJpa authorRepository;
+    private final BookRepositoryJpa bookRepository;
 
     @Autowired
-    public AuthorServiceImpl(AuthorRepositoryJpa authorDao, BookRepositoryJpa bookDao) {
-        this.authorDao = authorDao;
-        this.bookDao = bookDao;
+    public AuthorServiceImpl(AuthorRepositoryJpa authorRepository, BookRepositoryJpa bookRepository) {
+        this.authorRepository = authorRepository;
+        this.bookRepository = bookRepository;
     }
 
     @Override
     @Transactional
-    public void deleteAuthor(Long id, String name) throws AuthorError {
-        Author author;
-        if (id > 0) {
-            Optional<Author> optionalAuthor = authorDao.getById(id);
-            if (optionalAuthor.isEmpty())
-                throw new AuthorError("AUTHOR_NOT_FOUND", "id = " + id);
-            author = optionalAuthor.get();
-        } else if (!"".equals(name)) {
-            List<Author> authorsByName = authorDao.getAuthorsByName(name);
-            if (authorsByName.isEmpty() || authorsByName.size() > 1)
-                throw new AuthorError("AUTHOR_NOT_FOUND", name);
-            author = authorsByName.get(0);
-        } else
-            throw new AuthorError("AUTHOR_NOT_FOUND", name);
-        Long authorid = author.getId();
-        final List<Book> allbyAuthor = bookDao.getAllBookByAuthor(authorid);
+    public void deleteAuthor(Long id) throws AuthorError {
+        final List<Book> allbyAuthor = bookRepository.getAllBookByAuthor(id);
         if (allbyAuthor.isEmpty())
-            authorDao.remove(author);
-        else throw new AuthorError("AUTHOR_HAS_BOOK", "id = " + authorid);
-
+            authorRepository.deleteById(id);
+        else throw new AuthorError("AUTHOR_HAS_BOOK", "id = " + id);
     }
 
     @Override
     @Transactional
     public List<Author> getAllAuthor() {
-        return authorDao.getAll();
+        return authorRepository.getAll();
     }
 
     @Override
@@ -60,14 +45,14 @@ public class AuthorServiceImpl implements AuthorService {
             throw new AuthorError("AUTHORNAME_NOT_PASSED", "<empty>");
 
 
-        List<Author> authorList = authorDao.getAuthorByShortName(author.getShortName());
+        List<Author> authorList = authorRepository.getAuthorByShortName(author.getShortName());
         if (!authorList.isEmpty()) {
             Optional<Author> author1 = authorList.stream().filter(a -> a.getFullName().equals(author.getFullName())).findFirst();
             if (author1.isPresent())
                 return author1.get();
         }
 
-        return authorDao.insert(author);
+        return authorRepository.insert(author);
     }
 
     @Override
@@ -77,7 +62,7 @@ public class AuthorServiceImpl implements AuthorService {
             throw new AuthorError("AUTHORNAME_NOT_PASSED", "<empty>");
 
         Author author = new Author(firstName, lastName, middleName);
-        Optional<Author> byId = authorDao.getById(id);
+        Optional<Author> byId = authorRepository.getById(id);
         if (!byId.isPresent())
             throw new AuthorError("AUTHORNAME_NOT_PASSED", "<empty>");
 
@@ -86,6 +71,39 @@ public class AuthorServiceImpl implements AuthorService {
         byId.get().setMiddleName(author.getMiddleName());
         byId.get().setShortName(author.getShortName());
 
-        authorDao.update(byId.get());
+        authorRepository.update(byId.get());
     }
+
+    public Author getAuthorByParam(String authorName, Long authorId) throws AuthorError {
+        if (authorId == 0 && !authorName.isEmpty()) {
+            List<Author> authorByShortName = authorRepository.getAuthorsByName(authorName);
+            if (authorByShortName == null || authorByShortName.isEmpty())
+                throw new AuthorError("AUTHOR_NOT_FOUND", authorName);
+            return authorByShortName.get(0);
+        } else if (authorId > 0) {
+            return authorRepository.getById(authorId).orElseThrow(
+                    () -> new AuthorError("AUTHOR_NOT_FOUND", String.valueOf(authorId))
+            );
+        } else
+            throw new AuthorError("AUTHOR_NOT_FOUND", String.valueOf(authorId));
+    }
+
+    public Author getOrCreateAuthorByParam(String authorName, Long authorId) throws AuthorError {
+        if (authorId == 0 && !authorName.isEmpty()) {
+            List<Author> authorByShortName = authorRepository.getAuthorsByName(authorName);
+            if (authorByShortName == null || authorByShortName.isEmpty()) {
+                Author author = authorRepository.insertByName(authorName);
+                if (author == null)
+                    throw new AuthorError("AUTHOR_NOT_FOUND", authorName);
+                return author;
+            } else return authorByShortName.get(0);
+        } else if (authorId > 0) {
+            return authorRepository.getById(authorId).orElseThrow(
+                    () -> new AuthorError("AUTHOR_NOT_FOUND", String.valueOf(authorId))
+            );
+        } else {
+            throw new AuthorError("AUTHOR_NOT_FOUND", "id = 0");
+        }
+    }
+
 }

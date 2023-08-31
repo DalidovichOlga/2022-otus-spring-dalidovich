@@ -25,7 +25,7 @@ class GenreServiceImplTest {
         allGaner = genreService.getAllGaner();
         assertThat(allGaner.stream().filter((g) -> g.getGenreName().equals("88877666")).count()).isEqualTo(1);
         Genre id = allGaner.stream().filter((g) -> g.getGenreName().equals("88877666")).findAny().get();
-        assertDoesNotThrow(() -> genreService.deleteGenre(id));
+        assertDoesNotThrow(() -> genreService.deleteGenre(id.getId()));
         allGaner = genreService.getAllGaner();
         assertThat(allGaner.stream().filter((g) -> g.getGenreName().equals("88877666")).count()).isEqualTo(0);
 

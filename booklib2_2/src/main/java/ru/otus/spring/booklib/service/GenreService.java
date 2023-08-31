@@ -10,7 +10,9 @@ public interface GenreService {
 
     Genre createGenre(Genre genre) throws GenreError;
 
-    void deleteGenre(Genre genre) throws GenreError;
+    void deleteGenre(Long genreId ) throws GenreError;
 
     void updateGenre(Genre genre) throws GenreError;
+
+    Genre getOrCreateGenreByParam(String genreName, Long genreId);
 }

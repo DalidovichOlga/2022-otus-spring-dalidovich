@@ -7,6 +7,7 @@ import ru.otus.spring.booklib.dao.GenreRepositoryJpa;
 import ru.otus.spring.booklib.dao.BookRepositoryJpa;
 import ru.otus.spring.booklib.domain.BookView;
 import ru.otus.spring.booklib.domain.Genre;
+import ru.otus.spring.booklib.error.BookError;
 import ru.otus.spring.booklib.error.GenreError;
 
 import java.util.List;
@@ -14,42 +15,49 @@ import java.util.Optional;
 
 @Service
 public class GenreServiceImpl implements GenreService {
-    private final GenreRepositoryJpa genreDao;
-    private final BookRepositoryJpa bookDao;
+    private final GenreRepositoryJpa genreRepository;
+    private final BookRepositoryJpa bookRepository;
 
     @Autowired
-    public GenreServiceImpl(GenreRepositoryJpa genreDao, BookRepositoryJpa bookDao) {
-        this.genreDao = genreDao;
-        this.bookDao = bookDao;
+    public GenreServiceImpl(GenreRepositoryJpa genreRepository, BookRepositoryJpa bookRepository) {
+        this.genreRepository = genreRepository;
+        this.bookRepository = bookRepository;
     }
 
     @Override
     public List<Genre> getAllGaner() {
-        return genreDao.getAll();
+        return genreRepository.getAll();
     }
 
     @Transactional
-    public void deleteGenre(Genre genre) throws GenreError {
-        Long genreId = genre.getId();
-        if (genreId == null || genreId == 0)
-            if (!"".equals(genre.getGenreName())) {
-                List<Genre> genreList = genreDao.getGenreByName(genre.getGenreName());
-                if (genreList.isEmpty())
-                    throw new GenreError("GANRENAME_NOT_FOUND", String.valueOf(genre.getGenreName()));
-                if (genreList.size() > 1)
-                    throw new GenreError("GANRENAME_NOT_FOUND", String.valueOf(genre.getGenreName()));
-                genreId = genreList.get(0).getId();
-            }
-        Optional<Genre> genre1 = genreDao.getById(genreId);
-        if (genre1 == null)
-            throw new GenreError("GANRENAME_NOT_FOUND", String.valueOf(genre.getId()));
-
-        final List<BookView> allbyGenre = bookDao.getAllBookByGenre(genreId);
+    public void deleteGenre(Long genreId ) throws GenreError {
+        final List<BookView> allbyGenre = bookRepository.getAllBookByGenre(genreId);
         if (allbyGenre.isEmpty())
-            genreDao.deleteById(genreId);
+            genreRepository.deleteById(genreId);
         else
-            throw new GenreError("GANRENAME_USED_IN_BOOK", genre1.get().getGenreName());
+            throw new GenreError("GANRENAME_USED_IN_BOOK", "id=" + genreId  );
 
+    }
+
+    @Override
+    @Transactional
+    public Genre getOrCreateGenreByParam(String genreName, Long genreId)  {
+        if (genreId == 0 && !"".equals(genreName)) {
+            List<Genre> genreList = genreRepository.getGenreByName(genreName);
+            if (genreList.isEmpty()) {
+                Genre genre = genreRepository.insert(new Genre(genreName));
+                return genre;
+            } else
+                return genreList.get(0);
+
+        } else if (genreId > 0) {
+            Optional<Genre> genre = genreRepository.getById(genreId);
+            if (genre.isPresent())
+                return genre.get();
+            return null;
+
+        }
+        return null;
     }
 
     @Override
@@ -60,7 +68,7 @@ public class GenreServiceImpl implements GenreService {
         if (genre.getId() == 0)
             throw new GenreError("GANRENAME_NOT_PASSED", "<empty>");
 
-        List<Genre> genreList = genreDao.getGenreByName(genre.getGenreName());
+        List<Genre> genreList = genreRepository.getGenreByName(genre.getGenreName());
         if (!genreList.isEmpty()) {
             if (genreList.size() > 1)
                 throw new GenreError("GANRENAME_ALLREADY_EXISTS", genre.getGenreName());
@@ -69,7 +77,7 @@ public class GenreServiceImpl implements GenreService {
             } else return;  // иначе ничего менять не надо все и так как хочет пользователь
 
         }
-        genreDao.update(genre.getId(), genre.getGenreName());
+        genreRepository.update(genre.getId(), genre.getGenreName());
 
     }
 
@@ -78,11 +86,11 @@ public class GenreServiceImpl implements GenreService {
     public Genre createGenre(Genre genre) throws GenreError {
         if ("".equals(genre.getGenreName()))
             throw new GenreError("GANRENAME_NOT_PASSED", "<empty>");
-        List<Genre> genreList = genreDao.getGenreByName(genre.getGenreName());
+        List<Genre> genreList = genreRepository.getGenreByName(genre.getGenreName());
         if (!genreList.isEmpty())
             throw new GenreError("GANRENAME_ALLREADY_EXISTS", genre.getGenreName());
 
-        return genreDao.insert(genre);
+        return genreRepository.insert(genre);
     }
 
 }
