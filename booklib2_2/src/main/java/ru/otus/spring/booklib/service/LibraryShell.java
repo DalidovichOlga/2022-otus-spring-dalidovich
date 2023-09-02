@@ -5,10 +5,7 @@ import org.springframework.context.MessageSource;
 import ru.otus.spring.booklib.domain.Book;
 import ru.otus.spring.booklib.domain.Comment;
 import ru.otus.spring.booklib.domain.Genre;
-import ru.otus.spring.booklib.error.AuthorError;
-import ru.otus.spring.booklib.error.BookError;
-import ru.otus.spring.booklib.error.CommentError;
-import ru.otus.spring.booklib.error.GenreError;
+import ru.otus.spring.booklib.error.LibraryError;
 import org.springframework.shell.standard.ShellComponent;
 import org.springframework.shell.standard.ShellMethod;
 import org.springframework.shell.standard.ShellOption;
@@ -52,9 +49,9 @@ public class LibraryShell {
             genreService.updateGenre(g);
             textResult = messageSource.getMessage("genresuccessmod",
                     new String[]{name}, locale);
-        } catch (GenreError genreError) {
-            textResult = messageSource.getMessage(genreError.getCode(),
-                    new String[]{genreError.getDetails()}, locale);
+        } catch (LibraryError libraryError) {
+            textResult = messageSource.getMessage(libraryError.getCode(),
+                    new String[]{libraryError.getDetails()}, locale);
         }
         return textResult;
     }
@@ -79,9 +76,9 @@ public class LibraryShell {
             authorService.updateAuthor(id, lastName, firstName, middleName);
             textResult = messageSource.getMessage("authorsuccess",
                     new String[]{lastName + ' ' + firstName + ' ' + middleName}, locale);
-        } catch (AuthorError authorError) {
-            textResult = messageSource.getMessage(authorError.getCode(),
-                    new String[]{authorError.getDetails()}, locale);
+        } catch (LibraryError libraryError) {
+            textResult = messageSource.getMessage(libraryError.getCode(),
+                    new String[]{libraryError.getDetails()}, locale);
         }
         return textResult;
     }
@@ -107,8 +104,8 @@ public class LibraryShell {
             textResult = messageSource.getMessage("booksuccess",
                     new String[]{title}, locale);
 
-        } catch (BookError bookError) {
-            textResult = messageSource.getMessage(bookError.getErrorText(),
+        } catch (LibraryError bookError) {
+            textResult = messageSource.getMessage(bookError.getCode(),
                     new String[]{bookError.getDetails()}, locale);
         }
         return textResult;
@@ -128,8 +125,8 @@ public class LibraryShell {
             textResult = messageSource.getMessage("booksuccess",
                     new String[]{title}, locale);
 
-        } catch (BookError bookError) {
-            textResult = messageSource.getMessage(bookError.getErrorText(),
+        } catch (LibraryError bookError) {
+            textResult = messageSource.getMessage(bookError.getCode(),
                     new String[]{bookError.getDetails()}, locale);
         }
         return textResult;
@@ -149,8 +146,8 @@ public class LibraryShell {
 
             textResult = messageSource.getMessage("booksuccessmod",
                     new String[]{title}, locale);
-        } catch (BookError bookError) {
-            textResult = messageSource.getMessage(bookError.getErrorText(),
+        } catch (LibraryError bookError) {
+            textResult = messageSource.getMessage(bookError.getCode(),
                     new String[]{bookError.getDetails()}, locale);
 
         }
@@ -165,8 +162,8 @@ public class LibraryShell {
             service.removeBook(id);
             textResult = messageSource.getMessage("booksuccessdel",
                     new String[]{}, locale);
-        } catch (BookError bookError) {
-            textResult = messageSource.getMessage(bookError.getErrorText(),
+        } catch (LibraryError bookError) {
+            textResult = messageSource.getMessage(bookError.getCode(),
                     new String[]{bookError.getDetails()}, locale);
         }
         return textResult;
@@ -186,8 +183,8 @@ public class LibraryShell {
         List<String> stringList = null;
         try {
             stringList = service.getBookByAuthor(authorId, name).stream().map(t -> t.toString()).collect(Collectors.toList());
-        } catch (BookError bookError) {
-            System.out.println(messageSource.getMessage(bookError.getErrorText(),
+        } catch (LibraryError bookError) {
+            System.out.println(messageSource.getMessage(bookError.getCode(),
                     new String[]{bookError.getDetails()}, locale));
         }
         return stringList;
@@ -202,30 +199,26 @@ public class LibraryShell {
         try {
             book = service.getById(id);
             lstComment = commentService.getComment(id);
-        } catch (CommentError commentError) {
+        } catch (LibraryError commentError) {
             System.out.println(messageSource.getMessage(commentError.getCode(),
                     new String[]{commentError.getDetails()}, locale));
-        }
-        catch (BookError bookError) {
-            System.out.println(messageSource.getMessage(bookError.getErrorText(),
-                    new String[]{bookError.getDetails()}, locale));
         }
 
 
         if (book != null) {
-            String bookInf=messageSource.getMessage("bookname",
-                    new String[]{}, locale) + " " + book.getTitle() + "\n\r"+
+            String bookInf = messageSource.getMessage("bookname",
+                    new String[]{}, locale) + " " + book.getTitle() + "\n\r" +
                     messageSource.getMessage("bookauthor",
-                            new String[]{}, locale) + " " + book.getAuthor().getFullName() + "\n\r"+
+                            new String[]{}, locale) + " " + book.getAuthor().getFullName() + "\n\r" +
                     messageSource.getMessage("bookgenre",
-                            new String[]{}, locale) + " " + book.getGenre().getGenreName() ;
+                            new String[]{}, locale) + " " + book.getGenre().getGenreName();
             System.out.println(bookInf);
             System.out.println(messageSource.getMessage("comments",
-                    new String[]{}, locale) );
+                    new String[]{}, locale));
             int number = 1;
-            for (Comment comment :lstComment
-                 ) {
-                System.out.print(String.valueOf(number)+") "+comment);
+            for (Comment comment : lstComment
+            ) {
+                System.out.print(String.valueOf(number) + ") " + comment);
                 number++;
             }
         }
@@ -240,7 +233,7 @@ public class LibraryShell {
             textResult = messageSource.getMessage("commentsuccessadd",
                     new String[]{}, locale);
 
-        } catch (CommentError bookError) {
+        } catch (LibraryError bookError) {
             textResult = messageSource.getMessage(bookError.getCode(),
                     new String[]{bookError.getDetails()}, locale);
         }
@@ -255,7 +248,7 @@ public class LibraryShell {
             textResult = messageSource.getMessage("commentsuccessdel",
                     new String[]{}, locale);
 
-        } catch (CommentError bookError) {
+        } catch (LibraryError bookError) {
             textResult = messageSource.getMessage(bookError.getCode(),
                     new String[]{bookError.getDetails()}, locale);
         }

@@ -6,8 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import ru.otus.spring.booklib.domain.Book;
 import ru.otus.spring.booklib.domain.Comment;
-import ru.otus.spring.booklib.error.BookError;
-import ru.otus.spring.booklib.error.CommentError;
+import ru.otus.spring.booklib.error.LibraryError;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -30,7 +29,7 @@ public class CommentServiceImplTest {
         try {
             book = service.createBook("тестовая книга c комментариями", "Новикович Автор Сочинитель", "Роман"
                     , 0L, 0L);
-        } catch (BookError bookError) {
+        } catch (LibraryError bookError) {
             bookError.printStackTrace();
         }
         assertThat(book).isNotNull();
@@ -44,7 +43,7 @@ public class CommentServiceImplTest {
         try {
             lstComment = commentService.getComment(bookId);
 
-        } catch (CommentError bookError) {
+        } catch (LibraryError bookError) {
             bookError.printStackTrace();
         }
         assertThat(lstComment.size()).isEqualTo(2);
@@ -66,7 +65,7 @@ public class CommentServiceImplTest {
         try {
             lstComment = commentService.getComment(bookId);
 
-        } catch (CommentError bookError) {
+        } catch (LibraryError bookError) {
             bookError.printStackTrace();
         }
         assertThat(lstComment.size()).isEqualTo(2);
@@ -75,12 +74,12 @@ public class CommentServiceImplTest {
         try {
             lstComment = commentService.getComment(bookId);
 
-        } catch (CommentError bookError) {
+        } catch (LibraryError bookError) {
             bookError.printStackTrace();
         }
         assertThat(lstComment.size()).isEqualTo(1);
 
-        assertThrows(CommentError.class, () -> commentService.deleteComment(bookId, 3));
+        assertThrows(LibraryError.class, () -> commentService.deleteComment(bookId, 3));
 
     }
 }

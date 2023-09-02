@@ -7,8 +7,7 @@ import ru.otus.spring.booklib.dao.GenreRepositoryJpa;
 import ru.otus.spring.booklib.dao.BookRepositoryJpa;
 import ru.otus.spring.booklib.domain.BookView;
 import ru.otus.spring.booklib.domain.Genre;
-import ru.otus.spring.booklib.error.BookError;
-import ru.otus.spring.booklib.error.GenreError;
+import ru.otus.spring.booklib.error.LibraryError;
 
 import java.util.List;
 import java.util.Optional;
@@ -30,18 +29,18 @@ public class GenreServiceImpl implements GenreService {
     }
 
     @Transactional
-    public void deleteGenre(Long genreId ) throws GenreError {
+    public void deleteGenre(Long genreId) throws LibraryError {
         final List<BookView> allbyGenre = bookRepository.getAllBookByGenre(genreId);
         if (allbyGenre.isEmpty())
             genreRepository.deleteById(genreId);
         else
-            throw new GenreError("GANRENAME_USED_IN_BOOK", "id=" + genreId  );
+            throw new LibraryError("GANRENAME_USED_IN_BOOK", "id=" + genreId);
 
     }
 
     @Override
     @Transactional
-    public Genre getOrCreateGenreByParam(String genreName, Long genreId)  {
+    public Genre getOrCreateGenreByParam(String genreName, Long genreId) throws LibraryError {
         if (genreId == 0 && !"".equals(genreName)) {
             List<Genre> genreList = genreRepository.getGenreByName(genreName);
             if (genreList.isEmpty()) {
@@ -54,26 +53,27 @@ public class GenreServiceImpl implements GenreService {
             Optional<Genre> genre = genreRepository.getById(genreId);
             if (genre.isPresent())
                 return genre.get();
-            return null;
 
-        }
-        return null;
+            throw new LibraryError("GANRENAME_NOT_FOUND", String.valueOf(genreId));
+
+        } else
+            throw new LibraryError("GANRENAME_NOT_FOUND", String.valueOf(genreId));
     }
 
     @Override
     @Transactional
-    public void updateGenre(Genre genre) throws GenreError {
+    public void updateGenre(Genre genre) throws LibraryError {
         if ("".equals(genre.getGenreName()))
-            throw new GenreError("GANRENAME_NOT_PASSED", "<empty>");
+            throw new LibraryError("GANRENAME_NOT_PASSED", "<empty>");
         if (genre.getId() == 0)
-            throw new GenreError("GANRENAME_NOT_PASSED", "<empty>");
+            throw new LibraryError("GANRENAME_NOT_PASSED", "<empty>");
 
         List<Genre> genreList = genreRepository.getGenreByName(genre.getGenreName());
         if (!genreList.isEmpty()) {
             if (genreList.size() > 1)
-                throw new GenreError("GANRENAME_ALLREADY_EXISTS", genre.getGenreName());
+                throw new LibraryError("GANRENAME_ALLREADY_EXISTS", genre.getGenreName());
             else if (genreList.get(0).getId() != genre.getId()) {
-                throw new GenreError("GANRENAME_ALLREADY_EXISTS", genre.getGenreName());
+                throw new LibraryError("GANRENAME_ALLREADY_EXISTS", genre.getGenreName());
             } else return;  // иначе ничего менять не надо все и так как хочет пользователь
 
         }
@@ -83,12 +83,12 @@ public class GenreServiceImpl implements GenreService {
 
     @Override
     @Transactional
-    public Genre createGenre(Genre genre) throws GenreError {
+    public Genre createGenre(Genre genre) throws LibraryError {
         if ("".equals(genre.getGenreName()))
-            throw new GenreError("GANRENAME_NOT_PASSED", "<empty>");
+            throw new LibraryError("GANRENAME_NOT_PASSED", "<empty>");
         List<Genre> genreList = genreRepository.getGenreByName(genre.getGenreName());
         if (!genreList.isEmpty())
-            throw new GenreError("GANRENAME_ALLREADY_EXISTS", genre.getGenreName());
+            throw new LibraryError("GANRENAME_ALLREADY_EXISTS", genre.getGenreName());
 
         return genreRepository.insert(genre);
     }

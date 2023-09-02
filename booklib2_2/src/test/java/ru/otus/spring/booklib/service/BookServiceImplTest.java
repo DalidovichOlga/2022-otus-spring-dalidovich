@@ -7,7 +7,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import ru.otus.spring.booklib.domain.Author;
 import ru.otus.spring.booklib.domain.Book;
 import ru.otus.spring.booklib.domain.BookView;
-import ru.otus.spring.booklib.error.BookError;
+import ru.otus.spring.booklib.error.LibraryError;
 
 import java.util.List;
 
@@ -36,7 +36,7 @@ class BookServiceImplTest {
                 "Новиков А.С.",
                 "Роман", 0L, 0L));
 
-        assertThrows(BookError.class, () -> service.createBook("Еще новая тестовая книга 1",
+        assertThrows(LibraryError.class, () -> service.createBook("Еще новая тестовая книга 1",
                 "Новиков757567 А.С.",
                 "Роман", 0L, 0L));
         assertDoesNotThrow(() -> service.createBook("Еще новая тестовая книга 1",
@@ -57,7 +57,7 @@ class BookServiceImplTest {
             Book bb = service.getById(idbook2);
             Author a = bb.getAuthor();
             assertThat(a).isNotNull();
-        } catch (BookError bookError) {
+        } catch (LibraryError bookError) {
             bookError.printStackTrace();
         }
 
@@ -72,7 +72,7 @@ class BookServiceImplTest {
             book1 = service.createBook("Книга первая ИИИ",
                     "Игнатов Игнат Игнатьевич",
                     "Povecnm", 0L, 0L);
-        } catch (BookError bookError) {
+        } catch (LibraryError bookError) {
             bookError.printStackTrace();
         }
         assertTrue(book1 != null);
@@ -83,7 +83,7 @@ class BookServiceImplTest {
             book2 = service.createBook("Книга вторая ИИИ",
                     "Игнатов Игнат Игнатьевич",
                     "Роман", 0L, 0L);
-        } catch (BookError bookError) {
+        } catch (LibraryError bookError) {
             bookError.printStackTrace();
         }
         assertThat(book2.getId()).isGreaterThan(0L);
@@ -114,7 +114,7 @@ class BookServiceImplTest {
         try {
             book = service.createBook("Интересная тестовая книга 1", "Новикович Автор Сочинитель", "Роман"
                     , 0L, 0L);
-        } catch (BookError bookError) {
+        } catch (LibraryError bookError) {
             bookError.printStackTrace();
         }
         assertThat(book).isNotNull();
@@ -129,19 +129,18 @@ class BookServiceImplTest {
                 (b) -> b.getTitle().startsWith("НАЗВАНИЕ 3333") &&
                         b.getAuthor().equals("Новикин А.С.") && b.getGenre().equals("Повесть")).count()).isEqualTo(1);
 
-        assertThrows(BookError.class, () -> service.modifyBook(bookId, "", "Нов1икин Автор Сочинитель", "Повесть", 0L, 0L));
+        assertThrows(LibraryError.class, () -> service.modifyBook(bookId, "", "Нов1икин Автор Сочинитель", "Повесть", 0L, 0L));
 
         try {
             List<Book> truBook = service.getBookByAuthor(0L, "Новикин А.С.");
             assertThat(truBook.stream().filter(
                     (b) -> b.getTitle().startsWith("НАЗВАНИЕ 3333") &&
                             b.getAuthor().getShortName().equals("Новикин А.С.") && b.getGenre().getGenreName().equals("Повесть")).count()).isEqualTo(1);
-        } catch (BookError bookError) {
+        } catch (LibraryError bookError) {
             bookError.printStackTrace();
         }
 
     }
-
 
 
     @Test
