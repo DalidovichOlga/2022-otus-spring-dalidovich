@@ -1,0 +1,22 @@
+spring:
+  datasource:
+    url: jdbc:h2:mem:testbd
+    initialization-mode: always
+
+  jpa:
+    generate-ddl: false
+    hibernate:
+      ddl-auto: none
+
+    show-sql: true
+  liquibase:
+    changeLog: classpath:/db/changelog/changelog.xml
+  shell:
+    script:
+      spring:
+        shell:
+          script: false
+    interactive:
+      enabled: false
+settings:
+  local: ru-RU
