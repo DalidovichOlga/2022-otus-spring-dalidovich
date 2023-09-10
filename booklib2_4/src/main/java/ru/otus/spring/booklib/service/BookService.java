@@ -1,7 +1,6 @@
 package ru.otus.spring.booklib.service;
 
 import ru.otus.spring.booklib.domain.Book;
-import ru.otus.spring.booklib.domain.BookView;
 import ru.otus.spring.booklib.error.LibraryError;
 
 import java.util.List;

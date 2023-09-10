@@ -6,7 +6,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import ru.otus.spring.booklib.domain.Author;
 import ru.otus.spring.booklib.domain.Book;
-import ru.otus.spring.booklib.domain.BookView;
 import ru.otus.spring.booklib.error.LibraryError;
 
 import java.util.List;

@@ -5,7 +5,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.otus.spring.booklib.dao.GenreRepositoryJpa;
 import ru.otus.spring.booklib.dao.BookRepositoryJpa;
-import ru.otus.spring.booklib.domain.BookView;
 import ru.otus.spring.booklib.domain.Genre;
 import ru.otus.spring.booklib.error.LibraryError;
 
