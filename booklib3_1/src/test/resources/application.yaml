@@ -13,12 +13,6 @@ spring:
     changeLog: classpath:/db/changelog/changelog.xml
   messages:
     basename: i18n/messages
-  shell:
-    script:
-      spring:
-        shell:
-          script: false
-    interactive:
-      enabled: false
+
 settings:
   local: ru-RU

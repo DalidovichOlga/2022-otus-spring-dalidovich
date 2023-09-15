@@ -44,25 +44,27 @@ public class CommentServiceImpl implements CommentService {
 
     @Transactional
     @Override
-    public void deleteComment(Long id, Integer commentNumber) throws LibraryError {
+    public void deleteComment(Long id, Long commentId) throws LibraryError {
         Book book = bookRepository.findById(id).orElseThrow(() -> new LibraryError("BOOK_NOT_FOUND", "id =" + String.valueOf(id)));
         List<Comment> comments = commentRepositoryJpa.findByBookId(id);
-        if (commentNumber < 1 || comments.size() < commentNumber)
-            throw new LibraryError("NUMBER_INCORRECT", String.valueOf(commentNumber));
-        commentRepositoryJpa.delete(comments.get(commentNumber - 1));
+        Comment comDel = comments.stream().filter(t -> t.getId() == commentId).findFirst().orElseThrow(
+                () -> new LibraryError("NUMBER_INCORRECT", "id =" + String.valueOf(commentId))
+        );
+        commentRepositoryJpa.delete(comDel);
     }
 
     @Transactional
     @Override
-    public Comment modifyComment(Long id, Integer commentNumber, String text, String nick) throws LibraryError {
+    public Comment modifyComment(Long id, Long commentId, String text, String nick) throws LibraryError {
         Book book = bookRepository.findById(id).orElseThrow(() -> new LibraryError("BOOK_NOT_FOUND", "id =" + String.valueOf(id)));
         List<Comment> comments = commentRepositoryJpa.findByBookId(id);
-        if (commentNumber < 1 || comments.size() < commentNumber)
-            throw new LibraryError("NUMBER_INCORRECT", String.valueOf(commentNumber));
+        Comment comFind = comments.stream().filter(t -> t.getId() == commentId).findFirst().orElseThrow(
+                () -> new LibraryError("NUMBER_INCORRECT", "id =" + String.valueOf(commentId))
+        );
         if (!"".equals(text))
-            comments.get(commentNumber - 1).setCommentText(text);
+            comFind.setCommentText(text);
         if (!"".equals(nick))
-            comments.get(commentNumber - 1).setNick(nick);
-        return commentRepositoryJpa.save(comments.get(commentNumber - 1));
+            comFind.setNick(nick);
+        return commentRepositoryJpa.save(comFind);
     }
 }

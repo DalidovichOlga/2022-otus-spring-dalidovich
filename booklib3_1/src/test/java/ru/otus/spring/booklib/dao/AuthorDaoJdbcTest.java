@@ -68,7 +68,6 @@ class AuthorDaoJdbcTest {
         Author author = new Author("Василий", "Васильев", "Васильевич");
         List<Author> authorList = authorRepositoryJpa.findByShortName(author.getShortName());
         assertThat(authorList.isEmpty()).isTrue();
-        System.out.println(author);
         author = authorRepositoryJpa.save(author);
         author.setLastName("Петров");
         author.setShortName("Петров В.В.");
@@ -76,7 +75,6 @@ class AuthorDaoJdbcTest {
         Optional<Author> authorById = authorRepositoryJpa.findById(author.getId());
         assertThat(authorById.get().getShortName()).isEqualTo("Петров В.В.");
         assertThat(authorById.get().getFullName()).isEqualTo("Петров Василий Васильевич");
-        System.out.println(authorById.get());
     }
 
 

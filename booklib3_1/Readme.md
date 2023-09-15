@@ -64,14 +64,14 @@ get api/books/{bookId}/comments
 пример:
 http://localhost:8080/api/books/3/comments
 
-удалить комментарий по номеру.
-delete api/books/{bookId}/comments/{number}
+удалить комментарий по идентификатору.
+delete api/books/{bookId}/comments/{commentId}
 http://localhost:8080/api/books/3/comments/3
 
 изменить комментарий к книге
-patch /api/books/{bookId}/comments/{номер}
+patch /api/books/{bookId}/comments/{commentId}
 параметры commentText , nick
-http://localhost:8080/api/books/3/comments/3?commentText=sdfkl asjdf asdlkjf alsdfjk
+http://localhost:8080/api/books/3/comments/3?commentText=текст отзыва
 
 
  

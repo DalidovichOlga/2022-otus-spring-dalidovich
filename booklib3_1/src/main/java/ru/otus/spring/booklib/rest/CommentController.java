@@ -11,7 +11,6 @@ import ru.otus.spring.booklib.service.CommentService;
 
 import java.util.List;
 import java.util.stream.Collectors;
-import java.util.stream.IntStream;
 
 @RestController
 public class CommentController {
@@ -28,34 +27,32 @@ public class CommentController {
         Book book = bookService.getById(id);
         List<Comment> comments = service.getComment(id);
 
-        List<CommentDto> dtoList = IntStream.
-                range(0, comments.size()).
-                mapToObj(t -> new CommentDto(comments.get(t).getId(), t, comments.get(t).getNick(), comments.get(t).getCommentText())).
+        List<CommentDto> dtoList = comments.stream().map(t -> CommentDto.toDto(t)).
                 collect(Collectors.toList());
         return ResponseEntity.ok().body(new BookWithCommentsDto(BookDto.toDto(book), dtoList));
 
     }
 
     @PostMapping("/api/books/{bookId}/comments")
-    public ResponseEntity<CommentDto> addComment(@PathVariable("bookId") long bookId , @RequestBody CommentAddDto dto) throws LibraryError {
+    public ResponseEntity<CommentDto> addComment(@PathVariable("bookId") long bookId, @RequestBody CommentAddDto dto) throws LibraryError {
         Comment comment = service.commentBook(bookId, dto.getNick(), dto.getCommentText());
 
         return ResponseEntity.status(HttpStatus.CREATED).body(CommentDto.toDto(comment));
     }
 
-    @PatchMapping("/api/books/{bookId}/comments/{number}")
-    public ResponseEntity<CommentDto> updateComment(@PathVariable("bookId") long bookId,
-                                                 @PathVariable("number") int number,
-                                                 @RequestParam(value = "nick", required = false, defaultValue = "") String nick,
-                                                 @RequestParam(value = "commentText", required = false, defaultValue = "") String commentText) throws LibraryError {
-        Comment comment = service.modifyComment(bookId, number, commentText , nick);
+    @PatchMapping("/api/books/{bookId}/comments/{commentId}")
+    public ResponseEntity<CommentDto> updateComment(@PathVariable("bookId") Long bookId,
+                                                    @PathVariable("commentId") Long commentId,
+                                                    @RequestParam(value = "nick", required = false, defaultValue = "") String nick,
+                                                    @RequestParam(value = "commentText", required = false, defaultValue = "") String commentText) throws LibraryError {
+        Comment comment = service.modifyComment(bookId, commentId, commentText, nick);
         return ResponseEntity.ok().body(CommentDto.toDto(comment));
     }
 
-    @DeleteMapping("/api/books/{bookId}/comments/{number}")
-    public ResponseEntity<String> deleteComment(@PathVariable("bookId") long bookId,
-                                                 @PathVariable("number") int number) throws LibraryError {
-        service.deleteComment(bookId, number);
+    @DeleteMapping("/api/books/{bookId}/comments/{commentId}")
+    public ResponseEntity<String> deleteComment(@PathVariable("bookId") Long bookId,
+                                                @PathVariable("commentId") Long commentId) throws LibraryError {
+        service.deleteComment(bookId, commentId);
         return ResponseEntity.ok().body("Deleted");
     }
 }

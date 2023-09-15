@@ -12,7 +12,7 @@ public interface AuthorService {
 
     void deleteAuthor(Long id) throws LibraryError;
 
-    Author updateAuthor(Long id , String lastName, String firstName, String middleName) throws LibraryError;
+    Author updateAuthor(Long id, String lastName, String firstName, String middleName) throws LibraryError;
 
     Author getOrCreateAuthorByParam(String authorName, Long authorId) throws LibraryError;
 

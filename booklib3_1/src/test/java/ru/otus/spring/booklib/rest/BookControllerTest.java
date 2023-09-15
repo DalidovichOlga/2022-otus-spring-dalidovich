@@ -40,7 +40,7 @@ public class BookControllerTest {
     @MockBean
     private BookService service;
 
-    @Autowired
+    @MockBean
     MessageSource messageSource;
 
     @Autowired
@@ -68,13 +68,13 @@ public class BookControllerTest {
     void shouldReturnBookById() throws Exception {
         Book book = new Book("BOOK NUMBER 1", new Author("Иван", "Иванов", "Иванович"),
                 new Genre("жанр 1"));
-        given(service.getById(5L)).willThrow( new LibraryError("BOOK_NOT_FOUND","5"));
+        given(service.getById(5L)).willThrow(new LibraryError("BOOK_NOT_FOUND", "5"));
         given(service.getById(1L)).willReturn(book);
         BookDto expectedResult = BookDto.toDto(book);
 
         mvc.perform(get("/api/books/1"))
-               .andExpect(status().isOk())
-               .andExpect(content().json(mapper.writeValueAsString(expectedResult)));
+                .andExpect(status().isOk())
+                .andExpect(content().json(mapper.writeValueAsString(expectedResult)));
 
         mvc.perform(get("/api/books/5"))
                 .andExpect(status().isBadRequest());
@@ -82,8 +82,8 @@ public class BookControllerTest {
 
     @Test
     @DisplayName("Проверить возвращение книг, по автору")
-    void shouldReturnCorrectPersonByIdInPath() throws Exception {
-        Author author =new Author("Иван", "Иванов", "Иванович");
+    void shouldReturnBooksByAuthor() throws Exception {
+        Author author = new Author("Иван", "Иванов", "Иванович");
         List<Book> books = List.of(new Book("BOOK NUMBER 1", author,
                         new Genre("жанр 1")),
                 new Book("BOOK NUMBER 2", author,
@@ -106,7 +106,7 @@ public class BookControllerTest {
     void shouldCorrectCreateNewBook() throws Exception {
         Book book = new Book("BOOK NUMBER 1", new Author("Иван", "Иванов", "Иванович"),
                 new Genre("жанр 1"));
-        given(service.createBook(any(),any(), any(),eq(0L), eq(0L))).willReturn(book);
+        given(service.createBook(any(), any(), any(), eq(0L), eq(0L))).willReturn(book);
         String expectedResult = mapper.writeValueAsString(BookDto.toDto(book));
 
         mvc.perform(post("/api/books").contentType(APPLICATION_JSON)
@@ -123,13 +123,13 @@ public class BookControllerTest {
         Book book2 = new Book("BOOK NUMBER 2", new Author("Иван", "Иванов", "Иванович"),
                 new Genre("жанр 1"));
         given(service.getById(1L)).willReturn(book);
-        given(service.modifyBook(eq(1L),any(),any(),any(),any(),any())
+        given(service.modifyBook(eq(1L), any(), any(), any(), any(), any())
         ).willReturn(book2);
 
         String expectedResult = mapper.writeValueAsString(BookDto.toDto(book2));
 
-        mvc.perform(patch("/api/books/1", 1).param("title", "BOOK NUMBER 2" )
-                 .content(expectedResult))
+        mvc.perform(patch("/api/books/1", 1).param("title", "BOOK NUMBER 2")
+                .content(expectedResult))
                 .andExpect(status().isOk())
                 .andExpect(content().json(expectedResult));
     }

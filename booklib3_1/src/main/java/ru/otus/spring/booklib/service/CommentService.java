@@ -10,7 +10,7 @@ public interface CommentService {
 
     Comment commentBook(Long id, String nick, String text) throws LibraryError;
 
-    void deleteComment(Long id, Integer commentNumber) throws LibraryError;
+    void deleteComment(Long id, Long commentId) throws LibraryError;
 
-    Comment modifyComment(Long id, Integer commentNumber, String text, String nick) throws LibraryError;
+    Comment modifyComment(Long id, Long commentId, String text, String nick) throws LibraryError;
 }

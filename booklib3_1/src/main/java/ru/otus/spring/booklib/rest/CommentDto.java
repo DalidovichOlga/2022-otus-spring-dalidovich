@@ -12,11 +12,10 @@ import ru.otus.spring.booklib.domain.Comment;
 @Setter
 public class CommentDto {
     private long id;
-    private long number;
     private String nick;
     private String commentText;
 
     public static CommentDto toDto(Comment comment) {
-        return new CommentDto(comment.getId(), 0L, comment.getNick(), comment.getCommentText());
+        return new CommentDto(comment.getId(), comment.getNick(), comment.getCommentText());
     }
 }

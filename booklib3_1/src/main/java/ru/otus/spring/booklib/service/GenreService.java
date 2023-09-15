@@ -10,7 +10,7 @@ public interface GenreService {
 
     Genre createGenre(Genre genre) throws LibraryError;
 
-    void deleteGenre(Long genreId ) throws LibraryError;
+    void deleteGenre(Long genreId) throws LibraryError;
 
     Genre updateGenre(Genre genre) throws LibraryError;
 

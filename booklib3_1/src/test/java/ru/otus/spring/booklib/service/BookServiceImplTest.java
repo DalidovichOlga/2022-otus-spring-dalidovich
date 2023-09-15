@@ -47,10 +47,12 @@ class BookServiceImplTest {
 
         List<Book> allBook = service.getAllBook();
         assertThat(allBook.stream().filter((b) -> b.getTitle().startsWith("Новая интересная тестовая книга")).count()).isEqualTo(2);
+
         long idbook = allBook.stream().filter((b) -> b.getTitle().startsWith("Новая интересная тестовая книга 1")).findFirst().get().getId();
         assertDoesNotThrow(() -> service.removeBook(idbook));
         assertThat(authorService.getAllAuthor().stream().filter(f -> f.getFullName().equals("Новиков Автор Сочинитель")).count()
         ).isEqualTo(1L);
+
         long idbook2 = allBook.stream().filter((b) -> b.getTitle().startsWith("Новая интересная тестовая книга 3")).findFirst().get().getId();
         try {
             Book bb = service.getById(idbook2);

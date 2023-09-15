@@ -81,8 +81,8 @@ public class BookIntegrationTest {
                 .andExpect(status().isCreated())
                 .andReturn();
 
-        String string = result.getResponse().getContentAsString(UTF_8);
-        BookDto resultDto = mapper.readValue(string , BookDto.class);
+        String stringJson = result.getResponse().getContentAsString(UTF_8);
+        BookDto resultDto = mapper.readValue(stringJson , BookDto.class);
 
         mvc.perform(patch("/api/books/"+String.valueOf(resultDto.getId()), 1).param("title", "BOOK NUMBER 2" ))
                 .andExpect(status().isOk())

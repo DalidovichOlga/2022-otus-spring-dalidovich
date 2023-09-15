@@ -65,13 +65,4 @@ public class BookController {
         return ResponseEntity.ok().body(BookDto.toDto(book));
     }
 
-    /*
-    @ExceptionHandler(LibraryError.class)
-    public ResponseEntity<String> handleLibraryError(LibraryError ex) {
-        return ResponseEntity.badRequest().body(messageSource.getMessage(ex.getCode(),
-                new String[]{ex.getDetails()}, getLocale()));
-    }
-
-     */
-
 }

@@ -71,9 +71,11 @@ public class CommentServiceImplTest {
             bookError.printStackTrace();
         }
         assertThat(lstComment.size()).isEqualTo(2);
-        assertDoesNotThrow(() -> commentService.deleteComment(bookId, 1));
+        Long commentId1 = lstComment.get(0).getId();
+        assertDoesNotThrow(() -> commentService.deleteComment(bookId, commentId1));
+        Long commentId2 = lstComment.get(1).getId();
 
-        assertDoesNotThrow(() -> commentService.modifyComment(bookId, 1,"новый отзыв", ""));
+        assertDoesNotThrow(() -> commentService.modifyComment(bookId, commentId2,"новый отзыв", ""));
 
         try {
             lstComment = commentService.getComment(bookId);
@@ -85,7 +87,7 @@ public class CommentServiceImplTest {
         assertThat(lstComment.get(0).getNick()).isEqualTo("Петя");
         assertThat(lstComment.get(0).getCommentText()).isEqualTo("новый отзыв");
 
-        assertThrows(LibraryError.class, () -> commentService.deleteComment(bookId, 3));
+        assertThrows(LibraryError.class, () -> commentService.deleteComment(bookId, commentId1));
 
     }
 }

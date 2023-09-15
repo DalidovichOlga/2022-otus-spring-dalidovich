@@ -19,17 +19,18 @@ public class RestExceptionHandler extends ResponseEntityExceptionHandler {
     private final MessageSource messageSource;
 
 
-    public RestExceptionHandler( MessageSource messageSource) {
+    public RestExceptionHandler(MessageSource messageSource) {
         this.messageSource = messageSource;
     }
 
     private Locale getLocale() {
         return LocaleContextHolder.getLocale();
     }
-    @ExceptionHandler(LibraryError.class)
-    protected ResponseEntity<Object> handleConflict(LibraryError ex, WebRequest request){
 
-        return handleExceptionInternal(ex,messageSource.getMessage(ex.getCode(),
+    @ExceptionHandler(LibraryError.class)
+    protected ResponseEntity<Object> handleConflict(LibraryError ex, WebRequest request) {
+
+        return handleExceptionInternal(ex, messageSource.getMessage(ex.getCode(),
                 new String[]{ex.getDetails()}, getLocale()), new HttpHeaders(), HttpStatus.BAD_REQUEST, request);
 
     }

@@ -44,7 +44,7 @@ class GenreDaoJdbcTest {
         ganre = genreRepositoryJpa.save(ganre);
         assertThat(ganre.getId()).isGreaterThan(0L);
         ganre.setGenreName("Справочники");
-        genreRepositoryJpa.saveAndFlush(ganre) ;
+        genreRepositoryJpa.saveAndFlush(ganre);
         Optional<Genre> genre2 = genreRepositoryJpa.findById(ganre.getId());
         assertThat(genre2.get().getGenreName()).isEqualTo("Справочники");
 
