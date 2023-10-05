@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Удалить книгу</title>
+</head>
+<body>
+<h2>Удалить книгу:</h2>
+<form method="delete" th:action="@{/book/{id}(id=${bookdto.getId()})}" th:object="${bookdto}" th:method="delete" >
+    <label for="title"><b>Название:</b> </label>
+    <p id="title" th:text="${bookdto.title}">"${bookdto.title}"</p>
+    <label for="author"><b>Автор:</b></label>
+    <p id="author" th:text="${bookdto.author}">"${bookdto.author}"</p>
+    <label for="genre"><b>Жанр: </b></label>
+    <p id="genre" th:text="${bookdto.genre}">"${bookdto.genre}"</p>
+    <input type="submit" value="Удалить"/>
+</form>
+
+</body>
+</html>

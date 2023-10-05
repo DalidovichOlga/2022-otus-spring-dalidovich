@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8"/>
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.4.1/css/all.css">
+    <title>Комментарии</title>
+    <style type="text/css">
+        body {
+            padding: 50px;
+        }
+
+        .tbl, .tbl td, .tbl th {
+            border: 1px solid lightgray;
+            padding: 5px;
+        }
+    </style>
+</head>
+<body>
+<h2>Комментарии к книге:</h2>
+<label for="title"><b>Название:</b> </label>
+<p id="title" th:text="${bookdto.title}">"${bookdto.title}"</p>
+<label for="author"><b>Автор: </b></label>
+<p id="author" th:text="${bookdto.author}">"${bookdto.author}"</p>
+<label for="genre"><b>Жанр:</b></label>
+<p id="genre" th:text="${bookdto.genre}">"${bookdto.genre}"</p>
+<table class="tbl" style="width:800px">
+    <thead>
+    <tr>
+        <th>Ник</th>
+        <th>Отзыв</th>
+        <th>Удалить</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr th:each="comment : ${comments}">
+        <td th:text="${comment.nick}"></td>
+        <td th:text="${comment.commentText}"></td>
+        <td>
+            <form action="#" th:action="@{/book/{id}/comment/{commentId}(id=${bookdto.id} , commentId=${comment.id})}" th:method="delete" >
+                <input type="hidden" name="_method" value="delete" />
+                <button type="submit" id="submitButton"><i class="fas fa-times ml-2"></i></button>
+            </form>
+        </td>
+    </tr>
+    </tbody>
+</table>
+<p id="add" >Оставить отзыв</p>
+<form th:method="POST" th:action="@{/book/{id}/сomment(id=${bookdto.id})}" th:object="${CommentDto}">
+    <label for="commentText">Текст: </label>
+    <input size="100" type="text" th:field="*{commentText}" id="commentText"/>
+    <input type="submit" value="Добавить"/>
+</form>
+</body>
+</html>

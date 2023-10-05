@@ -1,0 +1,141 @@
+<?xml version="1.1" encoding="UTF-8" standalone="no"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext"
+                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog-ext
+                                       http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd
+                                       http://www.liquibase.org/xml/ns/dbchangelog
+                                       http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.6.xsd">
+
+    <changeSet author="odalidovich" id="2023-01-12--authors">
+        <createTable tableName="authors">
+            <column autoIncrement="true" name="id" type="SERIAL">
+                <constraints nullable="false"/>
+            </column>
+            <column name="firstname" type="VARCHAR(255)"/>
+            <column name="lastname" type="VARCHAR(255)"/>
+            <column name="middlename" type="VARCHAR(255)"/>
+            <column name="shortname" type="VARCHAR(55)"/>
+        </createTable>
+
+        <insert tableName="authors">
+            <column name="firstname" value="Александр"/>
+            <column name="lastname" value="Пушкин"/>
+            <column name="middlename" value="Сергеевич"/>
+            <column name="shortName" value="Пушкин А.С."/>
+        </insert>
+        <insert tableName="authors">
+            <column name="firstname" value="Федор"/>
+            <column name="lastname" value="Достоевский"/>
+            <column name="middlename" value="Михайлович"/>
+            <column name="shortname" value="Достоевский Ф.М."/>
+        </insert>
+        <insert tableName="authors">
+            <column name="firstname" value="Лев"/>
+            <column name="lastname" value="Толстой"/>
+            <column name="middlename" value="Николаевич"/>
+            <column name="shortname" value="Толстой Л.Н."/>
+        </insert>
+        <insert tableName="authors">
+            <column name="firstname" value="Алексей"/>
+            <column name="lastname" value="Горький"/>
+            <column name="middlename" value="Максимович"/>
+            <column name="shortname" value="Горький А.М."/>
+        </insert>
+        <insert tableName="authors">
+            <column name="firstname" value="Александр"/>
+            <column name="lastname" value="Солженицын"/>
+            <column name="middlename" value="Исаевич"/>
+            <column name="shortname" value="Солженицын А.С."/>
+        </insert>
+    </changeSet>
+
+    <!--objectQuotingStrategy = "QUOTE_ALL_OBJECTS"-->
+    <changeSet author="odalidovich" id="2023-01-12--genres">
+        <createTable tableName="genres">
+            <column autoIncrement="true" name="id" type="SERIAL">
+                <constraints nullable="false"/>
+            </column>
+            <column name="genrename" type="VARCHAR(255)"/>
+        </createTable>
+        <insert tableName="genres">
+            <column name="genrename" value="Роман"/>
+        </insert>
+        <insert tableName="genres">
+            <column name="genrename" value="Повесть"/>
+        </insert>
+
+    </changeSet>
+
+    <changeSet author="odalidovich" id="2023-01-12--book">
+        <createTable tableName="book">
+            <column autoIncrement="true" name="id" type="SERIAL">
+                <constraints nullable="false"/>
+            </column>
+            <column name="title" type="VARCHAR(255)"/>
+            <column name="authorid" type="long"/>
+            <column name="genreid" type="long"/>
+        </createTable>
+        <insert tableName="book">
+            <column name="title" value="Капитанская дочка"/>
+            <column name="authorid" value="1"/>
+            <column name="genreid" value="2"/>
+        </insert>
+        <insert tableName="book">
+            <column name="title" value="Война и мир"/>
+            <column name="authorid" value="3"/>
+            <column name="genreid" value="1"/>
+        </insert>
+        <insert tableName="book">
+            <column name="title" value="Бесы"/>
+            <column name="authorid" value="2"/>
+            <column name="genreid" value="1"/>
+        </insert>
+        <insert tableName="book">
+            <column name="title" value="Братья Карамазовы"/>
+            <column name="authorid" value="2"/>
+            <column name="genreid" value="1"/>
+        </insert>
+        <insert tableName="book">
+            <column name="title" value="Детство"/>
+            <column name="authorid" value="4"/>
+            <column name="genreid" value="1"/>
+        </insert>
+        <insert tableName="book">
+            <column name="title" value="Матренин двор"/>
+            <column name="authorid" value="5"/>
+            <column name="genreid" value="2"/>
+        </insert>
+    </changeSet>
+
+    <changeSet author="odalidovich" id="2023-08-08--comment">
+        <createTable tableName="comment">
+            <column autoIncrement="true" name="id" type="SERIAL">
+                <constraints nullable="false"/>
+            </column>
+            <column name="nick" type="VARCHAR(255)"/>
+            <column name="commenttext" type="text"/>
+            <column name="bookid" type="long"/>
+        </createTable>
+
+    </changeSet>
+
+
+    <changeSet author="odalidovich" id="2023-09-23--users" >
+        <createTable tableName="usergranttable">
+            <column autoIncrement="true" name="id" type="SERIAL">
+                <constraints nullable="false"/>
+            </column>
+            <column name="username" type="VARCHAR(255)"/>
+            <column name="password" type="VARCHAR(255)"/>
+            <column name="authorities" type="VARCHAR(255)"/>
+            <column name="account_non_expired" type="boolean"/>
+            <column name="account_non_locked" type="boolean"/>
+            <column name="credentials_non_expired" type="boolean"/>
+            <column name="enabled" type="boolean"/>
+        </createTable>
+    </changeSet>
+
+
+    <!--include file="1.00/1.00.02.xml" relativeToChangelogFile="true"/-->
+</databaseChangeLog>

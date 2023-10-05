@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Изменить автора</title>
+</head>
+<body>
+
+<h2>Изменить автора:</h2>
+
+<form method="patch" th:action="@{/author/{id}(id=${authorFioDto.getId()})}" th:object="${authorFioDto}" th:method="patch" >
+    <label for="title">Фамилия: </label>
+    <input type="text" th:field="*{lastName}" id="title"/>
+    <br/>
+    <br/>
+    <label for="author">Имя : </label>
+    <input type="text" th:field="*{firstName}" id="author"/>
+    <br/>
+    <br/>
+    <label for="genre">Отчество: </label>
+    <input type="text" th:field="*{middleName}" id="genre"/>
+    <br/>
+    <br/>
+    <input type="submit" value="Изменить"/>
+</form>
+
+</body>
+</html>

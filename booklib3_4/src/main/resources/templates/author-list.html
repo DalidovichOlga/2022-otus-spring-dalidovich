@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8"/>
+    <meta name="keywords" th:content="${keywords}"/>
+    <title>List of all persons</title>
+    <style type="text/css">
+        body {
+            padding: 50px;
+        }
+
+        .tbl, .tbl td, .tbl th {
+            border: 1px solid lightgray;
+            padding: 5px;
+        }
+    </style>
+    <script src="/webjars/jquery/3.5.1/jquery.min.js"></script>
+</head>
+<body>
+<h1>Авторы:</h1>
+
+<table class="tbl">
+    <thead>
+    <tr>
+        <th>Идентификатор</th>
+        <th>Инициалы автора</th>
+        <th>Полное имя автора</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr th:each="aut : ${authors}">
+        <td><div><a th:href="@{/author/{id}(id=${aut.id})}" th:text="${aut.id}">${aut.id}</a></div></td>
+        <td th:text="${aut.shortName}"></td>
+        <td th:text="${aut.fullName}"></td>
+    </tr>
+    </tbody>
+</table>
+
+</body>
+</html>
