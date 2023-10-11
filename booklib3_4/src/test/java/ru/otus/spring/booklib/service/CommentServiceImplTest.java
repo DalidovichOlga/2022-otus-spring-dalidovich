@@ -76,7 +76,7 @@ public class CommentServiceImplTest {
         assertDoesNotThrow(() -> commentService.deleteComment(bookId, commentId1));
         Long commentId2 = lstComment.get(1).getId();
 
-        assertDoesNotThrow(() -> commentService.modifyComment(bookId, commentId2, "новый отзыв", ""));
+        assertDoesNotThrow(() -> commentService.modifyComment(bookId, commentId2,"новый отзыв", ""));
 
         try {
             lstComment = commentService.getComment(bookId);

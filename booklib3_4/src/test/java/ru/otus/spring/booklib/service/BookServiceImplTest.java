@@ -28,7 +28,7 @@ class BookServiceImplTest {
     @Test
     @DisplayName("Создать Автора и его книгу")
     void shouldCreateSomeBooks() {
-        AuthorFioDto author = new AuthorFioDto(0, "Автор", "Новиков", "Сочинитель");
+        AuthorFioDto author = new AuthorFioDto(0,"Автор", "Новиков", "Сочинитель");
         assertDoesNotThrow(() -> authorService.createAuthor(author).getId());
 
         assertDoesNotThrow(() -> service.createBook(new BookAddDto("Новая интересная тестовая книга 1",
@@ -109,9 +109,9 @@ class BookServiceImplTest {
     @Test
     @DisplayName("Проверить изменение книги")
     void modifyBook() {
-        AuthorFioDto author = new AuthorFioDto(0, "Автор", "Новикович", "Сочинитель");
+        AuthorFioDto author = new AuthorFioDto(0,"Автор", "Новикович", "Сочинитель");
         assertDoesNotThrow(() -> authorService.createAuthor(author));
-        AuthorFioDto author2 = new AuthorFioDto(0, "Автор", "Новикин", "Сочинитель");
+        AuthorFioDto author2 = new AuthorFioDto(0,"Автор", "Новикин", "Сочинитель");
         assertDoesNotThrow(() -> authorService.createAuthor(author2));
 
         Book book = null;
@@ -150,7 +150,7 @@ class BookServiceImplTest {
     void createDeleteAuthor() {
         List<Author> allAuthor = authorService.getAllAuthor();
         assertThat(allAuthor.stream().filter((g) -> g.getFullName().equals("88877666 77765 77777")).count()).isEqualTo(0);
-        assertDoesNotThrow(() -> authorService.createAuthor(new AuthorFioDto(0, "77765", "88877666", "77777")));
+        assertDoesNotThrow(() -> authorService.createAuthor(new AuthorFioDto(0,"77765", "88877666", "77777")));
         allAuthor = authorService.getAllAuthor();
         assertThat(allAuthor.stream().filter((g) -> g.getFullName().equals("88877666 77765 77777")).count()).isEqualTo(1);
         assertThat(allAuthor.stream().filter((g) -> g.getShortName().equals("88877666 7.7.")).count()).isEqualTo(1);
