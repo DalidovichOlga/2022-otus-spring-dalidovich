@@ -8,6 +8,7 @@ import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.MessageSource;
 import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
 import ru.otus.spring.booklib.domain.Author;
 import ru.otus.spring.booklib.domain.Book;
@@ -28,6 +29,11 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
+
+@WithMockUser(
+        username = "testuser",
+        authorities = {"ROLE_ADMIN"}
+)
 @WebMvcTest(CommentController.class)
 public class CommentControllerTest {
     @Autowired
@@ -93,10 +99,10 @@ public class CommentControllerTest {
     @Test
     @DisplayName("Проверить вызова АПИ создания и удалить отзыва")
     void shouldCorrectDeleteComment() throws Exception {
-        mvc.perform(delete("/api/books/3/comments/1" , 1))
+        mvc.perform(delete("/api/books/3/comments/1", 1))
                 .andExpect(status().isOk());
 
-        verify(commentService, times(1)).deleteComment(3L,1L);
+        verify(commentService, times(1)).deleteComment(3L, 1L);
 
     }
 }

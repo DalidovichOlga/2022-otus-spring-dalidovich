@@ -1,7 +1,6 @@
 package ru.otus.spring.booklib.rest;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -9,11 +8,11 @@ import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.MessageSource;
 import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
 import ru.otus.spring.booklib.domain.Author;
 import ru.otus.spring.booklib.domain.Book;
 import ru.otus.spring.booklib.domain.Genre;
-import ru.otus.spring.booklib.domain.UserGrant;
 import ru.otus.spring.booklib.dto.BookDto;
 import ru.otus.spring.booklib.error.LibraryError;
 import ru.otus.spring.booklib.service.BookService;
@@ -32,6 +31,10 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
+@WithMockUser(
+        username = "testuser",
+        authorities = {"ROLE_ADMIN"}
+)
 @WebMvcTest(BookController.class)
 public class BookControllerTest {
 
@@ -52,13 +55,6 @@ public class BookControllerTest {
 
     @Autowired
     RestExceptionHandler ExceptionHandler;
-
-    @BeforeEach
-    void initUsers() {
-        UserGrant userGrant = new UserGrant(1L, "user", "ROLE_USER",
-                "12345", true, true, true, true);
-        given(userService.loadUserByUsername("user")).willReturn(userGrant);
-    }
 
 
     @Test

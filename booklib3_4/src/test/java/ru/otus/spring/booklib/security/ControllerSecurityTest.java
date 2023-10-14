@@ -1,7 +1,6 @@
 package ru.otus.spring.booklib.security;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,7 +13,6 @@ import org.springframework.test.web.servlet.MockMvc;
 import ru.otus.spring.booklib.domain.Author;
 import ru.otus.spring.booklib.domain.Book;
 import ru.otus.spring.booklib.domain.Genre;
-import ru.otus.spring.booklib.domain.UserGrant;
 import ru.otus.spring.booklib.error.LibraryError;
 import ru.otus.spring.booklib.pages.PagesControllerBook;
 import ru.otus.spring.booklib.dto.BookDto;
@@ -27,7 +25,6 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -63,13 +60,6 @@ public class ControllerSecurityTest {
     @Autowired
     RestExceptionHandler ExceptionHandler;
 
-    @BeforeEach
-    void initUsers() {
-        UserGrant userGrant = new UserGrant(1L, "user", "ROLE_USER",
-                "12345", true, true, true, true);
-        given(userService.loadUserByUsername("user")).willReturn(userGrant);
-    }
-
     @WithMockUser(
             username = "user",
             authorities = {"ROLE_USER"}
@@ -77,6 +67,7 @@ public class ControllerSecurityTest {
     @Test
     @DisplayName("проверить что доступ открыт для пользователя user")
     void shouldReturnOk() throws Exception {
+
         List<Book> books = List.of(new Book("BOOK NUMBER 1", new Author("Иван", "Иванов", "Иванович"),
                         new Genre("жанр 1")),
                 new Book("BOOK NUMBER 2", new Author("Петр", "Петров", "Петрович"),
@@ -91,8 +82,12 @@ public class ControllerSecurityTest {
 
     }
 
+    @WithMockUser(
+            username = "user",
+            authorities = {"ROLE_ANONIMOUS"}
+    )
     @Test
-    @DisplayName("Возвращение всего списка книг для неавторизованного пользователя")
+    @DisplayName("Возвращение всего списка книг для пользователя без прав 403")
     void shouldReturnNoOk() throws Exception {
         List<Book> books = List.of(new Book("BOOK NUMBER 1", new Author("Иван", "Иванов", "Иванович"),
                         new Genre("жанр 1")),
@@ -104,9 +99,25 @@ public class ControllerSecurityTest {
                 .map(BookDto::toDto).collect(Collectors.toList());
 
         mvc.perform(get("/book"))
-                .andExpect(status().is3xxRedirection());
-
+                .andExpect(status().isForbidden());
     }
+
+    @Test
+    @DisplayName("Вызов АПИ книги для неавторизованного пользователя - вызывает redirect")
+    void shouldReturnNoUnauthorized() throws Exception {
+        List<Book> books = List.of(new Book("BOOK NUMBER 1", new Author("Иван", "Иванов", "Иванович"),
+                        new Genre("жанр 1")),
+                new Book("BOOK NUMBER 2", new Author("Петр", "Петров", "Петрович"),
+                        new Genre("жанр 2")));
+        given(service.getAllBook()).willReturn(books);
+
+        List<BookDto> expectedResult = books.stream()
+                .map(BookDto::toDto).collect(Collectors.toList());
+
+        mvc.perform(get("/book"))
+                .andExpect(status().is3xxRedirection());
+    }
+
 
     @WithMockUser(
             username = "user",
@@ -183,11 +194,15 @@ public class ControllerSecurityTest {
                 .andExpect(status().is3xxRedirection());
     }
 
+    @WithMockUser(
+            username = "user",
+            authorities = {"ROLE_ANONIMOUS"}
+    )
     @Test
     @DisplayName("Проверить вызова АПИ  удаления книги без пользователя")
     void shouldCorrectDeleteBook() throws Exception {
         mvc.perform(delete("/book/1"))
-                .andExpect(status().is3xxRedirection());
+                .andExpect(status().isForbidden());
         //не вызовется, так как не аутентифицирован пользователь
         verify(service, times(0)).removeBook(1L);
     }

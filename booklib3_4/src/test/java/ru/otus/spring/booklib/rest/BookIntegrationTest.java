@@ -6,6 +6,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 import ru.otus.spring.booklib.dto.BookAddDto;
@@ -22,6 +23,10 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
+@WithMockUser(
+        username = "testuser",
+        authorities = {"ROLE_ADMIN"}
+)
 @SpringBootTest
 @AutoConfigureMockMvc
 public class BookIntegrationTest {
@@ -57,7 +62,7 @@ public class BookIntegrationTest {
     @Test
     @DisplayName("Проверить вызова АПИ создания книги")
     void shouldCorrectCreateNewBook() throws Exception {
-        BookAddDto bookDto = new BookAddDto("New Book 123" , "Петров Петр Петрович" , "новый");
+        BookAddDto bookDto = new BookAddDto("New Book 123", "Петров Петр Петрович", "новый");
         String expectedResult = mapper.writeValueAsString(bookDto);
 
         MvcResult result = mvc.perform(post("/api/books").contentType(APPLICATION_JSON)
@@ -67,7 +72,7 @@ public class BookIntegrationTest {
 
 
         String string = result.getResponse().getContentAsString(UTF_8);
-        BookDto resultDto = mapper.readValue(string , BookDto.class);
+        BookDto resultDto = mapper.readValue(string, BookDto.class);
         assertThat(resultDto.getTitle().equals("New Book 123")).isEqualTo(true);
         assertThat(resultDto.getAuthor()).isEqualTo("Петров П.П.");
     }
@@ -75,7 +80,7 @@ public class BookIntegrationTest {
     @Test
     @DisplayName("Проверить вызова АПИ изменения книги")
     void shouldCorrectUpdateBookName() throws Exception {
-        BookAddDto  bookDto = new BookAddDto("Новая Книга Для Изменения" , "Vasilev Vasiliy Vasilevich" , "новый");
+        BookAddDto bookDto = new BookAddDto("Новая Книга Для Изменения", "Vasilev Vasiliy Vasilevich", "новый");
         String expectedResult = mapper.writeValueAsString(bookDto);
 
         MvcResult result = mvc.perform(post("/api/books").contentType(APPLICATION_JSON)
@@ -84,9 +89,9 @@ public class BookIntegrationTest {
                 .andReturn();
 
         String stringJson = result.getResponse().getContentAsString(UTF_8);
-        BookDto resultDto = mapper.readValue(stringJson , BookDto.class);
+        BookDto resultDto = mapper.readValue(stringJson, BookDto.class);
 
-        mvc.perform(patch("/api/books/"+String.valueOf(resultDto.getId()), 1).param("title", "BOOK NUMBER 2" ))
+        mvc.perform(patch("/api/books/" + String.valueOf(resultDto.getId()), 1).param("title", "BOOK NUMBER 2"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.title").value("BOOK NUMBER 2"))
                 .andExpect(jsonPath("$.author").value("Vasilev V.V."));
@@ -95,7 +100,7 @@ public class BookIntegrationTest {
     @Test
     @DisplayName("Проверить вызова АПИ удаления книги")
     void shouldCorrectDeleteBook() throws Exception {
-        BookAddDto  bookDto = new BookAddDto("Новая Книга Для удаления" , "Петров Петр Петрович" , "новый");
+        BookAddDto bookDto = new BookAddDto("Новая Книга Для удаления", "Петров Петр Петрович", "новый");
         String expectedResult = mapper.writeValueAsString(bookDto);
 
         MvcResult result = mvc.perform(post("/api/books").contentType(APPLICATION_JSON)
@@ -104,12 +109,12 @@ public class BookIntegrationTest {
                 .andReturn();
 
         String string = result.getResponse().getContentAsString(Charset.defaultCharset());
-        BookDto resultDto = mapper.readValue(string , BookDto.class);
+        BookDto resultDto = mapper.readValue(string, BookDto.class);
 
 
-        mvc.perform(delete("/api/books/"+ String.valueOf(resultDto.getId())))
+        mvc.perform(delete("/api/books/" + String.valueOf(resultDto.getId())))
                 .andExpect(status().isOk());
-        mvc.perform(get("/api/books/"+String.valueOf(resultDto.getId())))
+        mvc.perform(get("/api/books/" + String.valueOf(resultDto.getId())))
                 .andExpect(status().isBadRequest());
 
     }

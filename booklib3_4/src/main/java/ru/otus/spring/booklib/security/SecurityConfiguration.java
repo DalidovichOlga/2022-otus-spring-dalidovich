@@ -1,5 +1,6 @@
 package ru.otus.spring.booklib.security;
 
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
@@ -11,6 +12,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.core.userdetails.UserDetailsService;
 
+
 @EnableWebSecurity(debug = true)
 public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 
@@ -20,27 +22,18 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 
     @Override
     public void configure(WebSecurity web) {
-        /*web.ignoring()
-                .antMatchers("/");
-         */
     }
 
     @Override
     public void configure(HttpSecurity http) throws Exception {
         http.csrf().disable()
                 .authorizeRequests()
-                .antMatchers("/api/**").anonymous()  // здесь можно все и всем
+                .antMatchers("/api/**").hasRole("ADMIN")
                 .and()
                 .authorizeRequests()
-                .antMatchers("/**").authenticated()
+                .antMatchers("/**").hasRole("USER")
                 .and()
-                .formLogin()
-//                .and()
-//                .anonymous()
-//                .principal("anonymous");
-//                .and()
-//                .rememberMe().key( "Some secret" )
-        ;
+                .formLogin();
     }
 
     @Bean

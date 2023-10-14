@@ -8,7 +8,7 @@ spring:
     hibernate:
       ddl-auto: none
 
-    show-sql: false
+    show-sql: true
   liquibase:
     changeLog: classpath:/db/changelog/changelog.xml
   messages:

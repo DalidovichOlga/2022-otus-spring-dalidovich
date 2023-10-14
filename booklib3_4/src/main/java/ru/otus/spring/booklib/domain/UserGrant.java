@@ -25,8 +25,8 @@ public class UserGrant implements UserDetails {
     private Long id;
     @Column(name = "username")
     private String userName;
-    @Column(name = "authorities")
-    private String authorities;
+    //@Column(name = "authorities")
+    //private String authorities;
     @Column(name = "password")
     private String password;
     @Column(name = "accountNonExpired")
@@ -38,13 +38,9 @@ public class UserGrant implements UserDetails {
     @Column(name = "enabled")
     private boolean enabled;
 
-    public Collection<? extends GrantedAuthority> getAuthorities()
-    {
-        List<Role> arrayList =Arrays.stream(authorities.split(";")).map(
-               t-> Role.valueOf(t)
-        ).collect(Collectors.toList());
-        return arrayList;
-    }
+    @OneToMany(targetEntity = Role.class, cascade = {CascadeType.PERSIST, CascadeType.MERGE},fetch = FetchType.EAGER)
+    @JoinColumn(name = "id")
+    List<Role> authorities;
 
     @Override
     public String getUsername() {

@@ -1,51 +1,20 @@
 package ru.otus.spring.booklib.security;
 
 import lombok.NonNull;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.stereotype.Service;
 import ru.otus.spring.booklib.dao.UserGrantRepository;
-import ru.otus.spring.booklib.domain.Role;
-import ru.otus.spring.booklib.domain.UserGrant;
-
-import javax.annotation.PostConstruct;
-import java.util.ArrayList;
 
 
+@Service
+@RequiredArgsConstructor
 public class UserService implements UserDetailsService {
-    @Autowired
-    private UserGrantRepository userRepository;
 
-    @PostConstruct
-    public void init() {
-
-        ArrayList<Role> roleArrayList = new ArrayList<Role>();
-        roleArrayList.add(Role.USER);
-        if (!userRepository.findByUserName(("user")).isPresent()) {
-            userRepository.save(UserGrant.builder()
-                    .userName("user")
-                    .password(new BCryptPasswordEncoder().encode("123456"))
-                    .authorities("USER")
-                    .accountNonExpired(true)
-                    .accountNonLocked(true)
-                    .credentialsNonExpired(true)
-                    .enabled(true)
-                    .build());
-        }
-        if (!userRepository.findByUserName("vasya").isPresent()) {
-            userRepository.save(UserGrant.builder()
-                    .userName("vasya")
-                    .password(new BCryptPasswordEncoder().encode("123456"))
-                    .authorities("USER")
-                    .accountNonExpired(true)
-                    .accountNonLocked(true)
-                    .credentialsNonExpired(true)
-                    .enabled(true)
-                    .build());
-        }
-    }
+    private final UserGrantRepository userRepository;
 
     @Override
     public UserDetails loadUserByUsername(@NonNull String username) throws UsernameNotFoundException {
