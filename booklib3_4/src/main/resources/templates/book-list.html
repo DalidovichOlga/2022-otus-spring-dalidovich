@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8"/>
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.4.1/css/all.css">
+    <title>Список книг</title>
+    <style type="text/css">
+        body {
+            padding: 50px;
+        }
+
+        .tbl, .tbl td, .tbl th {
+            border: 1px solid lightgray;
+            padding: 5px;
+        }
+
+    </style>
+    <script src="/webjars/jquery/3.5.1/jquery.min.js"></script>
+</head>
+<body>
+<h1>Список книг:</h1>
+
+<table class="tbl" style="width:800px">
+    <thead>
+    <tr>
+        <th>ID</th>
+        <th>Автор</th>
+        <th>Название</th>
+        <th>Жанр</th>
+        <th>Удалить</th>
+        <th>Отзывы</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr th:each="book : ${books}">
+        <td>
+            <div><a th:href="@{/book/{id}(id=${book.id})}" th:text="${book.id}">${book.id}</a></div>
+        </td>
+        <td>
+            <a th:href="@{/author/{id}(id=${book.id})}" th:text="${book.author}">${book.author}</a>
+        </td>
+        <td th:text="${book.title}"></td>
+        <td th:text="${book.genre}"></td>
+        <td>
+            <a th:href="@{/book/delete/{id}(id=${book.id})}"
+               class="btn btn-primary">
+                <i class="fas fa-times ml-2"></i>
+            </a>
+        </td>
+        <td>
+            <a th:href="@{/book/{id}/comment(id=${book.id})}"
+               class="btn btn-primary">
+                <i class="fas fa-comment"></i>
+            </a>
+        </td>
+    </tr>
+    </tbody>
+</table>
+<br/>
+<br/>
+<a th:href="@{/book/add}">Добавить книгу</a>
+<br/>
+<br/>
+<a th:href="@{/author}">Список авторов</a>
+</body>
+</html>
