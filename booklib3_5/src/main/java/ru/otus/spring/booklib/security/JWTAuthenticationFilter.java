@@ -23,6 +23,7 @@ import java.util.stream.Collectors;
 public class JWTAuthenticationFilter extends UsernamePasswordAuthenticationFilter {
 
     public static final String SECRET = "Супер секретный ключ по-русски";
+    public static final int TOKEN_TIME_LIVE = 900000;
 
     private AuthenticationManager authenticationManager;
 
@@ -36,8 +37,6 @@ public class JWTAuthenticationFilter extends UsernamePasswordAuthenticationFilte
     @Override
     public Authentication attemptAuthentication(HttpServletRequest req,
                                                 HttpServletResponse res) throws AuthenticationException {
-
-        System.out.println("attemptAuthentication - START!");
 
         try {
             UserDto creds = new ObjectMapper()
@@ -63,7 +62,7 @@ public class JWTAuthenticationFilter extends UsernamePasswordAuthenticationFilte
                 .withSubject(((UserGrant) auth.getPrincipal()).getUsername())
                 .withClaim("roles", auth.getAuthorities().stream().map(a -> a.getAuthority()).collect(Collectors.joining(","))
                 )
-                .withExpiresAt(new Date(System.currentTimeMillis() + 900000))
+                .withExpiresAt(new Date(System.currentTimeMillis() + TOKEN_TIME_LIVE))
                 .sign(Algorithm.HMAC512(SECRET.getBytes()));
 
         String body = "Bearer " + token;

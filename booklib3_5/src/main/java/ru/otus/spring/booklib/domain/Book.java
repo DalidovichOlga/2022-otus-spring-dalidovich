@@ -36,10 +36,4 @@ public class Book {
         this.author = a;
         this.genre = g;
     }
-
-    @Override
-    public String toString() {
-        return (id + "     ").substring(0, 5) + "|" + (title + " ".repeat(50)).substring(0, 50) + "|"
-                + (author.getShortName() + " ".repeat(50)).substring(0, 40) + "|" + genre.getGenreName() + "\n\r";
-    }
 }

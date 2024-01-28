@@ -3,19 +3,18 @@ package ru.otus.spring.booklib.service;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import ru.otus.spring.booklib.dao.GenreRepositoryJpa;
-import ru.otus.spring.booklib.dao.BookRepositoryJpa;
+import ru.otus.spring.booklib.dao.GenreRepository;
+import ru.otus.spring.booklib.dao.BookRepository;
 import ru.otus.spring.booklib.domain.Genre;
 import ru.otus.spring.booklib.error.LibraryError;
 
 import java.util.List;
-import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
 public class GenreServiceImpl implements GenreService {
-    private final GenreRepositoryJpa genreRepository;
-    private final BookRepositoryJpa bookRepository;
+    private final GenreRepository genreRepository;
+    private final BookRepository bookRepository;
 
     @Override
     public List<Genre> getAllGaner() {
@@ -25,9 +24,9 @@ public class GenreServiceImpl implements GenreService {
     @Transactional
     public void deleteGenre(Long genreId) throws LibraryError {
         Boolean existsByGenreId = bookRepository.existsByGenreId(genreId);
-        if (!existsByGenreId)
+        if (!existsByGenreId) {
             genreRepository.deleteById(genreId);
-        else
+        } else
             throw new LibraryError("GANRENAME_USED_IN_BOOK", "id=" + genreId);
 
     }
@@ -38,20 +37,14 @@ public class GenreServiceImpl implements GenreService {
         if (genreId == 0 && !"".equals(genreName)) {
             List<Genre> genreList = genreRepository.findByGenreName(genreName);
             if (genreList.isEmpty()) {
-                Genre genre = genreRepository.save(new Genre(genreName));
-                return genre;
+                return genreRepository.save(new Genre(genreName));
             } else
                 return genreList.get(0);
 
-        } else if (genreId > 0) {
-            Optional<Genre> genre = genreRepository.findById(genreId);
-            if (genre.isPresent())
-                return genre.get();
+        }
 
-            throw new LibraryError("GANRENAME_NOT_FOUND", String.valueOf(genreId));
-
-        } else
-            throw new LibraryError("GANRENAME_NOT_FOUND", String.valueOf(genreId));
+        return genreRepository.findById(genreId).orElseThrow(
+                () -> new LibraryError("GANRENAME_NOT_FOUND", String.valueOf(genreId)));
     }
 
     @Override
@@ -78,12 +71,13 @@ public class GenreServiceImpl implements GenreService {
     @Override
     @Transactional
     public Genre createGenre(Genre genre) throws LibraryError {
-        if ("".equals(genre.getGenreName()))
+        if ("".equals(genre.getGenreName())) {
             throw new LibraryError("GANRENAME_NOT_PASSED", "<empty>");
+        }
         List<Genre> genreList = genreRepository.findByGenreName(genre.getGenreName());
-        if (!genreList.isEmpty())
+        if (!genreList.isEmpty()) {
             throw new LibraryError("GANRENAME_ALLREADY_EXISTS", genre.getGenreName());
-
+        }
         return genreRepository.save(genre);
     }
 

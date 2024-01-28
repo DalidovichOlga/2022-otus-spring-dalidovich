@@ -27,7 +27,7 @@ public class AuthorController {
     @GetMapping("/api/authors/{id}")
     public ResponseEntity<AuthorDto> getAuthorById(@PathVariable("id") long id) throws LibraryError {
 
-        Author author = service.getAuthorByParam("", id);
+        Author author = service.getAuthorByParam( id);
 
         return ResponseEntity.ok().body(AuthorDto.toDto(author));
     }

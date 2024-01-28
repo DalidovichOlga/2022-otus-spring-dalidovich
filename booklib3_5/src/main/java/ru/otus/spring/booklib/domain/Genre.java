@@ -31,8 +31,4 @@ public class Genre {
         this.id = 0;
     }
 
-    @Override
-    public String toString() {
-        return (id + "     ").substring(0, 5) + "|" + genreName + "\n\r";
-    }
 }

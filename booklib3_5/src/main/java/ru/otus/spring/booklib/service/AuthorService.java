@@ -1,5 +1,6 @@
 package ru.otus.spring.booklib.service;
 
+import org.springframework.transaction.annotation.Transactional;
 import ru.otus.spring.booklib.domain.Author;
 import ru.otus.spring.booklib.dto.AuthorFioDto;
 import ru.otus.spring.booklib.error.LibraryError;
@@ -14,6 +15,8 @@ public interface AuthorService {
     void deleteAuthor(Long id) throws LibraryError;
 
     Author updateAuthor(AuthorFioDto authorFioDto) throws LibraryError;
+
+    Author getAuthorByParam(Long authorId) throws LibraryError;
 
     Author getOrCreateAuthorByParam(String authorName, Long authorId) throws LibraryError;
 

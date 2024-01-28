@@ -52,11 +52,4 @@ public class Author {
         return lastName + " " + firstName + " " + middleName;
     }
 
-
-    @Override
-    public String toString() {
-        return (id + "     ").substring(0, 5) + "|" + (shortName + " ".repeat(50)).substring(0, 55) + "|"
-                + getFullName() + "\n\r";
-    }
-
 }

@@ -8,7 +8,7 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
-import ru.otus.spring.booklib.dao.GenreRepositoryJpa;
+import ru.otus.spring.booklib.dao.GenreRepository;
 import ru.otus.spring.booklib.domain.Genre;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
@@ -30,7 +30,7 @@ public class GenreIntegrationTest {
     private ObjectMapper mapper;
 
     @Autowired
-    private GenreRepositoryJpa genreRepositoryJpa;
+    private GenreRepository genreRepository;
 
     @Test
     @DisplayName("Возвращение списка жарнов")
@@ -43,7 +43,7 @@ public class GenreIntegrationTest {
     @DisplayName("Создадим жанр и обновим его")
     void shouldUpdateAuthorList() throws Exception {
         Genre genre = new Genre("пАэзия");
-        genre = genreRepositoryJpa.save(genre);
+        genre = genreRepository.save(genre);
 
         mvc.perform(patch("/api/genres/" + String.valueOf(genre.getId()), 1).param("genreName", "поэзия"))
                 .andExpect(status().isOk())

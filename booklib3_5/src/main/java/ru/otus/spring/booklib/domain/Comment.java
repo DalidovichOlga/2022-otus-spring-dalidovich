@@ -37,9 +37,4 @@ public class Comment {
         this(nick, commentText, bookId, 0);
 
     }
-
-    @Override
-    public String toString() {
-        return (nick + ":") + "\n\r" + commentText + "\n\r";
-    }
 }

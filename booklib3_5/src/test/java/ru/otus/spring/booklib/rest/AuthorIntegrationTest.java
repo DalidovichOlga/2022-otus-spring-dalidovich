@@ -8,7 +8,7 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
-import ru.otus.spring.booklib.dao.AuthorRepositoryJpa;
+import ru.otus.spring.booklib.dao.AuthorRepository;
 import ru.otus.spring.booklib.domain.Author;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
@@ -30,7 +30,7 @@ public class AuthorIntegrationTest {
     private ObjectMapper mapper;
 
     @Autowired
-    private AuthorRepositoryJpa authorRepositoryJpa;
+    private AuthorRepository authorRepository;
 
     @Test
     @DisplayName("Возвращение списка авторов")
@@ -54,7 +54,7 @@ public class AuthorIntegrationTest {
     @DisplayName("Создадим автора и обновим его")
     void shouldUpdateAuthorList() throws Exception {
         Author author = new Author("Алексей", "Сергеев", "Сергеевич");
-        author = authorRepositoryJpa.save(author);
+        author = authorRepository.save(author);
 
         mvc.perform(patch("/api/authors/" + String.valueOf(author.getId()), 1).param("firstName", "Сергей"))
                 .andExpect(status().isOk())

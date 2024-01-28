@@ -6,7 +6,6 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
-import org.springframework.context.annotation.Import;
 import ru.otus.spring.booklib.domain.Author;
 import ru.otus.spring.booklib.domain.Book;
 import ru.otus.spring.booklib.domain.Genre;
@@ -22,7 +21,7 @@ class BookDaoJdbcTest {
     @Autowired
     private TestEntityManager em;
     @Autowired
-    private BookRepositoryJpa bookRepositoryJpa;
+    private BookRepository bookRepository;
 
     private Author author;
     private Genre genre;
@@ -40,12 +39,12 @@ class BookDaoJdbcTest {
     @Test
     void shouldCreateNewBook() {
         assertThat(author.getId()).isGreaterThan(0L);
-        List<Book> allbyAuthor = bookRepositoryJpa.findByAuthorId(author.getId());
+        List<Book> allbyAuthor = bookRepository.findByAuthorId(author.getId());
         int count = allbyAuthor.size();
         Book book = new Book("Новая книга 19922", author, genre);
-        book = bookRepositoryJpa.save(book);
+        book = bookRepository.save(book);
         assertThat(book.getId()).isGreaterThan(0L);
-        allbyAuthor = bookRepositoryJpa.findByAuthorId(author.getId());
+        allbyAuthor = bookRepository.findByAuthorId(author.getId());
         assertThat(allbyAuthor.size()).isGreaterThan(count);
     }
 
@@ -53,17 +52,17 @@ class BookDaoJdbcTest {
     @Test
     void shouldModifyNewBook() {
         Book book = new Book("Еще одна книга Новая книга 777722", author, genre);
-        book = bookRepositoryJpa.save(book);
+        book = bookRepository.save(book);
         assertThat(book.getId()).isGreaterThan(0L);
         book.setTitle("новое название книги 7778");
         book.setGenre(genre_2);
-        bookRepositoryJpa.saveAndFlush(book);
-        Optional<Book> bw = bookRepositoryJpa.findById(book.getId());
+        bookRepository.saveAndFlush(book);
+        Optional<Book> bw = bookRepository.findById(book.getId());
         assertThat(bw.get().getTitle()).isEqualTo("новое название книги 7778");
         assertThat(bw.get().getAuthor().getId()).isEqualTo(author.getId());
         assertThat(bw.get().getGenre().getId()).isEqualTo(2L);
-        bookRepositoryJpa.delete(book);
-        assertThat(bookRepositoryJpa.findById(book.getId()).isEmpty()).isTrue();
+        bookRepository.delete(book);
+        assertThat(bookRepository.findById(book.getId()).isEmpty()).isTrue();
 
 
     }
@@ -71,11 +70,11 @@ class BookDaoJdbcTest {
     @DisplayName("найти книгу по автору ")
     @Test
     void shouldFindBook() {
-        List<Book> allby = bookRepositoryJpa.findByAuthorId(author.getId());
+        List<Book> allby = bookRepository.findByAuthorId(author.getId());
         int count = allby.size();
         Book book = new Book("Третья тестовая Новая книга 777722", author, genre);
-        book = bookRepositoryJpa.save(book);
-        allby = bookRepositoryJpa.findByAuthorId(author.getId());
+        book = bookRepository.save(book);
+        allby = bookRepository.findByAuthorId(author.getId());
         assertThat(allby.size()).isGreaterThan(count);
         assertThat(allby).contains(book);
     }

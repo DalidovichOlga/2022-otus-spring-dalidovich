@@ -17,7 +17,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 class GenreDaoJdbcTest {
 
     @Autowired
-    private GenreRepositoryJpa genreRepositoryJpa;
+    private GenreRepository genreRepository;
     @Autowired
     private TestEntityManager em;
 
@@ -25,13 +25,13 @@ class GenreDaoJdbcTest {
     @Test
     void shouldCreateNewGenre() {
         Genre ganre = new Genre("Учебники");
-        List<Genre> genreList = genreRepositoryJpa.findByGenreName("Учебники");
+        List<Genre> genreList = genreRepository.findByGenreName("Учебники");
         assertThat(genreList.isEmpty()).isTrue();
-        ganre = genreRepositoryJpa.save(ganre);
+        ganre = genreRepository.save(ganre);
         assertThat(ganre.getId()).isGreaterThan(0L);
-        genreList = genreRepositoryJpa.findByGenreName("Учебники");
+        genreList = genreRepository.findByGenreName("Учебники");
         assertThat(genreList.isEmpty()).isFalse();
-        Optional<Genre> genreById = genreRepositoryJpa.findById(ganre.getId());
+        Optional<Genre> genreById = genreRepository.findById(ganre.getId());
         assertThat(genreById.isEmpty()).isFalse();
     }
 
@@ -39,13 +39,13 @@ class GenreDaoJdbcTest {
     @Test
     void shouldCreateandUpdateGenre() {
         Genre ganre = new Genre("СправАчники");
-        List<Genre> genreList = genreRepositoryJpa.findByGenreName("СправАчники");
+        List<Genre> genreList = genreRepository.findByGenreName("СправАчники");
         assertThat(genreList.isEmpty()).isTrue();
-        ganre = genreRepositoryJpa.save(ganre);
+        ganre = genreRepository.save(ganre);
         assertThat(ganre.getId()).isGreaterThan(0L);
         ganre.setGenreName("Справочники");
-        genreRepositoryJpa.saveAndFlush(ganre);
-        Optional<Genre> genre2 = genreRepositoryJpa.findById(ganre.getId());
+        genreRepository.saveAndFlush(ganre);
+        Optional<Genre> genre2 = genreRepository.findById(ganre.getId());
         assertThat(genre2.get().getGenreName()).isEqualTo("Справочники");
 
     }
@@ -55,10 +55,10 @@ class GenreDaoJdbcTest {
     void shouldReturnAll() {
         Genre ganre = new Genre("Учебники которых быть не должно");
 
-        List<Genre> genreList = genreRepositoryJpa.findAll();
+        List<Genre> genreList = genreRepository.findAll();
         int elementСount = genreList.size();
-        genreRepositoryJpa.save(ganre);
-        List<Genre> genreList2 = genreRepositoryJpa.findAll();
+        genreRepository.save(ganre);
+        List<Genre> genreList2 = genreRepository.findAll();
 
         assertThat(genreList2.size()).isGreaterThan(elementСount);
 

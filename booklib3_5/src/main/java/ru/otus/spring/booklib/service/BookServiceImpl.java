@@ -17,8 +17,8 @@ import java.util.Optional;
 public class BookServiceImpl implements BookService {
     private final AuthorService authorService;
     private final GenreService genreService;
-    private final BookRepositoryJpa bookRepository;
-    private final CommentRepositoryJpa commentRepositoryJpa;
+    private final BookRepository bookRepository;
+    private final CommentRepository commentRepository;
 
 
     @Override
@@ -38,19 +38,15 @@ public class BookServiceImpl implements BookService {
     @Transactional
     @Override
     public Book modifyBook(BookDto bookDto) throws LibraryError {
-        Optional<Book> bookById = bookRepository.findById(bookDto.getId());
+        Book book = bookRepository.findById(bookDto.getId()).orElseThrow(() ->
+                new LibraryError("BOOK_NOT_FOUND", String.valueOf(bookDto.getId())));
 
         Long OldAuthorId = 0L;
         Long OldGenreId = 0L;
 
-        if (!bookById.isPresent())
-            throw new LibraryError("BOOK_NOT_FOUND", String.valueOf(bookDto.getId()));
-
-        Book book = bookById.get();
-
         // разберемся с автором
         if (bookDto.getAuthor() != null && (!bookDto.getAuthor().isEmpty())) {
-            OldAuthorId = bookById.get().getAuthor().getId();
+            OldAuthorId = book.getAuthor().getId();
             Author authorByParam = authorService.getOrCreateAuthorByParam(bookDto.getAuthor(), 0L);
             if (authorByParam.getId() == OldAuthorId)
                 OldAuthorId = 0L;
@@ -59,14 +55,14 @@ public class BookServiceImpl implements BookService {
 
         //теперь жанр определить как объект базы
         if ((!"".equals(bookDto.getGenre()))) {
-            OldGenreId = bookById.get().getGenre().getId();
+            OldGenreId = book.getGenre().getId();
             Genre genreByParam = genreService.getOrCreateGenreByParam(bookDto.getGenre(), 0L);
             if (genreByParam.getId() == OldGenreId)
                 OldGenreId = 0L;
             book.setGenre(genreByParam);
         }
 
-        book.setTitle("".equals(bookDto.getTitle()) ? bookById.get().getTitle() : bookDto.getTitle());
+        book.setTitle("".equals(bookDto.getTitle()) ? book.getTitle() : bookDto.getTitle());
         bookRepository.save(book);
 
         if (OldAuthorId > 0) {
@@ -97,8 +93,9 @@ public class BookServiceImpl implements BookService {
 
         List<Book> allTitleAuthorGenre = bookRepository.findByTitleAndAuthorId(
                 bookAddDto.getTitle(), author.getId());
-        if (!allTitleAuthorGenre.isEmpty())
+        if (!allTitleAuthorGenre.isEmpty()) {
             throw new LibraryError("BOOK_ALREADY_EXISTS", bookAddDto.getTitle());
+        }
 
         Book book = new Book(bookAddDto.getTitle(), author, genre);
         return bookRepository.save(book);
@@ -123,7 +120,7 @@ public class BookServiceImpl implements BookService {
         } catch (LibraryError genreError) { //подавим исключение, так как жанр удалять рано
         }
 
-        commentRepositoryJpa.deleteByBookId(authorId);
+        commentRepository.deleteByBookId(authorId);
 
     }
 

@@ -18,9 +18,8 @@ import java.util.Arrays;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-public class JWTAuthorizationFilter extends BasicAuthenticationFilter {
 
-    public static final String SECRET = "Супер секретный ключ по-русски";
+public class JWTAuthorizationFilter extends BasicAuthenticationFilter {
 
     public JWTAuthorizationFilter(AuthenticationManager authManager) {
         super(authManager);
@@ -47,15 +46,12 @@ public class JWTAuthorizationFilter extends BasicAuthenticationFilter {
         String token = request.getHeader("Authorization");
 
         if (token != null) {
-            Map<String, Claim> claims = JWT.require(Algorithm.HMAC512(SECRET.getBytes()))
+            Map<String, Claim> claims = JWT.require(Algorithm.HMAC512(JWTAuthenticationFilter.SECRET.getBytes()))
                     .build()
                     .verify(token.replace("Bearer ", ""))
                     .getClaims();
             String roles = claims.get("roles").asString();
             String user = claims.get("sub").asString();
-            System.out.println("getAuthentication");
-            System.out.println(user);
-            System.out.println(roles);
 
             if (user != null) {
                 String[] rolesArr = roles.split(",");
@@ -64,9 +60,7 @@ public class JWTAuthorizationFilter extends BasicAuthenticationFilter {
                         Arrays.stream(rolesArr).map(x -> new Role(0L, 0L, x)).collect(Collectors.toList()));
 
             }
-            return null;
         }
-
         return null;
     }
 
