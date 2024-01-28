@@ -1,0 +1,14 @@
+spring:
+  datasource:
+    url: jdbc:h2:mem:testbd
+  liquibase:
+    changeLog: classpath:/db/changelog/changelog.xml
+  messages:
+    basename: i18n/messages
+h2:
+  console:
+    enabled: true
+settings:
+  local: ru-RU
+
+
