@@ -1,0 +1,96 @@
+<?xml version="1.1" encoding="UTF-8" standalone="no"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext"
+                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog-ext
+                                       http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd
+                                       http://www.liquibase.org/xml/ns/dbchangelog
+                                       http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.6.xsd">
+
+
+
+    <changeSet author="odalidovich" id="2024-08-08--comment">
+        <createTable tableName="comment">
+            <column autoIncrement="true" name="id" type="SERIAL">
+                <constraints nullable="false"/>
+            </column>
+            <column name="nick" type="VARCHAR(255)"/>
+            <column name="commenttext" type="text"/>
+            <column name="bookid" type="SERIAL"/>
+        </createTable>
+
+    </changeSet>
+
+<!--
+    <changeSet author="odalidovich" id="2024-09-23-users">
+        <createTable tableName="usergranttable">
+            <column autoIncrement="true" name="id" type="SERIAL">
+                <constraints nullable="false"/>
+            </column>
+            <column name="username" type="VARCHAR(255)"/>
+            <column name="password" type="VARCHAR(255)"/>
+            <column name="authorities" type="VARCHAR(255)"/>
+            <column name="account_non_expired" type="boolean"/>
+            <column name="account_non_locked" type="boolean"/>
+            <column name="credentials_non_expired" type="boolean"/>
+            <column name="enabled" type="boolean"/>
+        </createTable>
+        <insert tableName="usergranttable">
+            <column name="username" value="user"/>
+            <column name="password" value="$2a$10$bhTYkFwPM67tgpKosHePKemAjZIkbq5ok/drUzC5tU0qDzHXt4bwS"/>
+            <column name="authorities" value="ROLE_USER"/>
+            <column name="account_non_expired" value="true"/>
+            <column name="account_non_locked" value="true"/>
+            <column name="credentials_non_expired" value="true"/>
+            <column name="enabled" value="true"/>
+        </insert>
+        <insert tableName="usergranttable">
+            <column name="username" value="vasya"/>
+            <column name="password" value="$2a$10$bhTYkFwPM67tgpKosHePKemAjZIkbq5ok/drUzC5tU0qDzHXt4bwS"/>
+            <column name="authorities" value="ROLE_USER"/>
+            <column name="account_non_expired" value="true"/>
+            <column name="account_non_locked" value="true"/>
+            <column name="credentials_non_expired" value="true"/>
+            <column name="enabled" value="true"/>
+        </insert>
+        <insert tableName="usergranttable">
+            <column name="username" value="petya"/>
+            <column name="password" value="$2a$10$bhTYkFwPM67tgpKosHePKemAjZIkbq5ok/drUzC5tU0qDzHXt4bwS"/>
+            <column name="authorities" value="ROLE_ANONYMOUS"/>
+            <column name="account_non_expired" value="true"/>
+            <column name="account_non_locked" value="true"/>
+            <column name="credentials_non_expired" value="true"/>
+            <column name="enabled" value="true"/>
+        </insert>
+
+    </changeSet>
+
+    <changeSet author="odalidovich" id="2024-10-13-role">
+        <createTable tableName="role">
+            <column autoIncrement="true" name="id" type="SERIAL">
+                <constraints nullable="false"/>
+            </column>
+            <column name="name" type="VARCHAR(255)"/>
+            <column name="usergrandid" type="SERIAL"/>
+        </createTable>
+        <insert tableName="role">
+            <column name="name" value="ROLE_USER"/>
+            <column name="usergrandid" value="1"/>
+        </insert>
+        <insert tableName="role">
+            <column name="name" value="ROLE_USER"/>
+            <column name="usergrandid" value="2"/>
+        </insert>
+        <insert tableName="role">
+            <column name="name" value="ROLE_ADMIN"/>
+            <column name="usergrandid" value="2"/>
+        </insert>
+        <insert tableName="role">
+            <column name="name" value="ROLE_ANONYMOUS"/>
+            <column name="usergrandid" value="3"/>
+        </insert>
+
+    </changeSet>
+-->
+
+</databaseChangeLog>

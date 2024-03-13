@@ -1,0 +1,55 @@
+version: '3'
+services:
+  appbookib:
+    build:
+      context: .\booklib
+      dockerfile: Dockerfile
+    privileged: true
+    ports:
+      - "8080:8080"
+    # Эти свойства перегружают соответствующие в application.yml
+    environment:
+      - SPRING_DATASOURCE_DRIVER_CLASS_NAME=org.postgresql.Driver
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://postgres:5432/db
+      - SPRING_DATASOURCE_USERNAME=postgres
+      - SPRING_DATASOURCE_PASSWORD=postgres
+      - COMMENT_SERVICE_NAME=appcomment
+      - COMMENT_SERVICE_PORT=8090
+    depends_on:
+      - postgres
+    networks:
+      - nw
+  appcomment:
+    build:
+      context: .\commentService
+      dockerfile: Dockerfile
+    privileged: true
+    ports:
+      - "8090:8090"
+    # Эти свойства перегружают соответствующие в application.yml
+    environment:
+      - SPRING_DATASOURCE_DRIVER_CLASS_NAME=org.postgresql.Driver
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://postgres:5432/db
+      - SPRING_DATASOURCE_USERNAME=postgres
+      - SPRING_DATASOURCE_PASSWORD=postgres
+      - TECH_USER=texuser
+      - TECH_PAROL=123456
+      - BOOK_SERVICE_NAME=http://appbookib
+      - BOOK_SERVICE_PORT=8080
+    depends_on:
+      - postgres
+    networks:
+      - nw
+  postgres:
+    # В идеале должна быть ещё и версия image
+    image: "postgres"
+    ports:
+      - "5432:5432"
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+      - POSTGRES_DB=db
+    networks:
+      - nw
+networks:
+  nw:

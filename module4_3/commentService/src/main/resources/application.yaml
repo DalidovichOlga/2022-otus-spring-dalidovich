@@ -1,0 +1,52 @@
+server:
+  port: 8090
+
+spring:
+  datasource:
+    url: jdbc:h2:mem:testdb
+    driver-class-name:
+    username:
+    password:
+    initialization-mode: always
+
+  jpa:
+    generate-ddl: false
+    hibernate:
+      ddl-auto: none
+
+    show-sql: true
+  liquibase:
+    changeLog: classpath:/db/changelog/changelog.xml
+  messages:
+    basename: i18n/messages
+  mvc:
+    hiddenmethod:
+      filter:
+        enabled: true
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: "*"
+  health:
+    defaults:
+      enabled: true
+  endpoint:
+    health:
+      show-details: always
+
+logging:
+  file:
+    path: ./logs
+h2:
+  console:
+    enabled: true
+settings:
+  local: ru-RU
+
+commentsrv:
+  userName: ${TECH_USER:"texuser"}
+  password: ${TECH_PAROL:"123456"}
+  host: ${BOOK_SERVICE_NAME:"http://localhost"}
+  port: ${BOOK_SERVICE_PORT:"8080"}
