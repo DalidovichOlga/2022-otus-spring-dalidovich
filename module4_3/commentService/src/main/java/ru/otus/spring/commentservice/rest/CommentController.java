@@ -18,11 +18,12 @@ import java.util.stream.Collectors;
 
 @RestController
 @RequiredArgsConstructor
+@RequestMapping("/api/book")
 public class CommentController {
     private final CommentService service;
     private final BookService bookService;
 
-    @GetMapping("/api/book/{id}/comments")
+    @GetMapping("/{id}/comments")
     public ResponseEntity<BookWithCommentsDto> getCommentsById(@PathVariable("id") long id) throws LibraryError {
         BookDto book = bookService.getById(id);
         List<Comment> comments = service.getComment(id);
@@ -33,14 +34,14 @@ public class CommentController {
 
     }
 
-    @PostMapping("/api/book/{bookId}/comments")
+    @PostMapping("/{bookId}/comments")
     public ResponseEntity<CommentDto> addComment(@PathVariable("bookId") long bookId, @RequestBody CommentAddDto dto) throws LibraryError {
         Comment comment = service.commentBook(bookId, dto);
 
         return ResponseEntity.status(HttpStatus.CREATED).body(CommentDto.toDto(comment));
     }
 
-    @PatchMapping("/api/book/{bookId}/comments/{commentId}")
+    @PatchMapping("/{bookId}/comments/{commentId}")
     public ResponseEntity<CommentDto> updateComment(@PathVariable("bookId") Long bookId,
                                                     @PathVariable("commentId") Long commentId,
                                                     @RequestParam(value = "nick", required = false, defaultValue = "") String nick,
@@ -49,14 +50,14 @@ public class CommentController {
         return ResponseEntity.ok().body(CommentDto.toDto(comment));
     }
 
-    @DeleteMapping("/api/book/{bookId}/comments/{commentId}")
+    @DeleteMapping("/{bookId}/comments/{commentId}")
     public ResponseEntity<String> deleteComment(@PathVariable("bookId") Long bookId,
                                                 @PathVariable("commentId") Long commentId) throws LibraryError {
         service.deleteComment(bookId, commentId);
         return ResponseEntity.ok().body("Deleted");
     }
 
-    @DeleteMapping("/api/book/comment/{bookId}")
+    @DeleteMapping("/comment/{bookId}")
     public ResponseEntity<String> deleteCommentByBook(@PathVariable("bookId") Long bookId                                              ) throws LibraryError {
         service.deleteAllComment(bookId);
         return ResponseEntity.ok().body("Deleted");

@@ -22,7 +22,7 @@ public class AuthorServiceImpl implements AuthorService {
     @Override
     @Transactional(readOnly = true)
     public Author getById(Long authorId) throws LibraryError {
-        return authorRepository.findById(authorId).orElseThrow(() -> new LibraryError("AUTHOR_NOT_FOUND", String.valueOf(authorId)));
+        return authorRepository.findById(authorId).orElseThrow(() -> new LibraryError("author_not_found", String.valueOf(authorId)));
     }
 
     @Override
@@ -31,7 +31,7 @@ public class AuthorServiceImpl implements AuthorService {
         final List<Book> allbyAuthor = bookRepository.findByAuthorId(id);
         if (allbyAuthor.isEmpty()) {
             authorRepository.deleteById(id);
-        } else throw new LibraryError("AUTHOR_HAS_BOOK", "id = " + id);
+        } else throw new LibraryError("author_not_found", "id = " + id);
     }
 
     @Override
@@ -45,7 +45,7 @@ public class AuthorServiceImpl implements AuthorService {
     public Author createAuthor(AuthorFioDto authorFioDto) throws LibraryError {
         Author author = AuthorFioDto.toAuthor(authorFioDto);
         if (author.getLastName() == null || "".equals(author.getFirstName()) || "".equals(author.getLastName()))
-            throw new LibraryError("AUTHORNAME_NOT_PASSED", "<empty>");
+            throw new LibraryError("authorname_not_passed", "<empty>");
 
 
         List<Author> authorList = authorRepository.findByShortName(author.getShortName());
@@ -65,12 +65,12 @@ public class AuthorServiceImpl implements AuthorService {
                 (authorFioDto.getFirstName() == null || "".equals(authorFioDto.getFirstName())) &&
                 (authorFioDto.getMiddleName() == null || "".equals(authorFioDto.getMiddleName())) ||
                 authorFioDto.getId() == 0)
-            throw new LibraryError("AUTHORNAME_NOT_PASSED", "<empty>");
+            throw new LibraryError("authorname_not_passed", "<empty>");
 
 
         Optional<Author> byId = authorRepository.findById(authorFioDto.getId());
         if (!byId.isPresent())
-            throw new LibraryError("AUTHORNAME_NOT_PASSED", "<empty>");
+            throw new LibraryError("authorname_not_passed", "<empty>");
 
         authorFioDto.setFirstName(("".equals(authorFioDto.getFirstName())) ? byId.get().getFirstName() : authorFioDto.getFirstName());
         authorFioDto.setLastName(("".equals(authorFioDto.getLastName())) ? byId.get().getLastName() : authorFioDto.getLastName());
@@ -91,18 +91,18 @@ public class AuthorServiceImpl implements AuthorService {
         if (authorId == 0 && !authorName.isEmpty()) {
             List<Author> authorByShortName = getAuthorsByName(authorName);
             if (authorByShortName == null || authorByShortName.isEmpty())
-                throw new LibraryError("AUTHOR_NOT_FOUND", authorName);
+                throw new LibraryError("author_not_found", authorName);
             return authorByShortName.get(0);
         }
         return authorRepository.findById(authorId).orElseThrow(
-                () -> new LibraryError("AUTHOR_NOT_FOUND", String.valueOf(authorId)));
+                () -> new LibraryError("author_not_found", String.valueOf(authorId)));
     }
 
     @Override
     @Transactional(readOnly = true)
     public Author getAuthorByParam(Long authorId) throws LibraryError {
         return authorRepository.findById(authorId).orElseThrow(
-                () -> new LibraryError("AUTHOR_NOT_FOUND", String.valueOf(authorId))
+                () -> new LibraryError("author_not_found", String.valueOf(authorId))
         );
     }
 
@@ -170,12 +170,12 @@ public class AuthorServiceImpl implements AuthorService {
 
             Author author = insertByName(authorName);
             if (author == null)
-                throw new LibraryError("AUTHOR_NOT_FOUND", authorName);
+                throw new LibraryError("author_not_found", authorName);
             return author;
         }
 
         return authorRepository.findById(authorId).orElseThrow(
-                () -> new LibraryError("AUTHOR_NOT_FOUND", String.valueOf(authorId))
+                () -> new LibraryError("author_not_found", String.valueOf(authorId))
         );
     }
 }

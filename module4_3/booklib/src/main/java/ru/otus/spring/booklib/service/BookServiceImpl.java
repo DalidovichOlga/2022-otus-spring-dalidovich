@@ -38,7 +38,7 @@ public class BookServiceImpl implements BookService {
     @Override
     public Book modifyBook(BookDto bookDto) throws LibraryError {
         Book book = bookRepository.findById(bookDto.getId()).orElseThrow(() ->
-                new LibraryError("BOOK_NOT_FOUND", String.valueOf(bookDto.getId())));
+                new LibraryError("book_not_found", String.valueOf(bookDto.getId())));
 
         Long OldAuthorId = 0L;
         Long OldGenreId = 0L;
@@ -84,7 +84,7 @@ public class BookServiceImpl implements BookService {
     @Override
     public Book createBook(BookAddDto bookAddDto) throws LibraryError {
         if ("".equals(bookAddDto.getTitle()) || "".equals(bookAddDto.getGenre()))
-            throw new LibraryError("ATTRIBUTE_NOT_PASSED", bookAddDto.getTitle());
+            throw new LibraryError("attribute_not_passed", bookAddDto.getTitle());
 
         Genre genre = genreService.getOrCreateGenreByParam(bookAddDto.getGenre(), 0L);
 
@@ -93,7 +93,7 @@ public class BookServiceImpl implements BookService {
         List<Book> allTitleAuthorGenre = bookRepository.findByTitleAndAuthorId(
                 bookAddDto.getTitle(), author.getId());
         if (!allTitleAuthorGenre.isEmpty()) {
-            throw new LibraryError("BOOK_ALREADY_EXISTS", bookAddDto.getTitle());
+            throw new LibraryError("book_already_exists", bookAddDto.getTitle());
         }
 
         Book book = new Book(bookAddDto.getTitle(), author, genre);
@@ -103,7 +103,7 @@ public class BookServiceImpl implements BookService {
     @Transactional
     @Override
     public void removeBook(Long id) throws LibraryError {
-        Book book = bookRepository.findById(id).orElseThrow(() -> new LibraryError("BOOK_NOT_FOUND", "id =" + String.valueOf(id)));
+        Book book = bookRepository.findById(id).orElseThrow(() -> new LibraryError("book_not_found", "id =" + String.valueOf(id)));
         long genreId = book.getGenre().getId();
         long authorId = book.getAuthor().getId();
         bookRepository.delete(book);
@@ -126,7 +126,7 @@ public class BookServiceImpl implements BookService {
 
     @Override
     public Book getById(Long id) throws LibraryError {
-        return bookRepository.findById(id).orElseThrow(() -> new LibraryError("BOOK_NOT_FOUND", "id =" + String.valueOf(id)));
+        return bookRepository.findById(id).orElseThrow(() -> new LibraryError("book_not_found", "id =" + String.valueOf(id)));
     }
 
 

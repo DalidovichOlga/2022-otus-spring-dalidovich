@@ -79,7 +79,7 @@ public class BookControllerTest {
     void shouldReturnBookById() throws Exception {
         Book book = new Book("BOOK NUMBER 1", new Author("Иван", "Иванов", "Иванович"),
                 new Genre("жанр 1"));
-        given(service.getById(5L)).willThrow(new LibraryError("BOOK_NOT_FOUND", "5"));
+        given(service.getById(5L)).willThrow(new LibraryError("book_not_found", "5"));
         given(service.getById(1L)).willReturn(book);
         BookDto expectedResult = BookDto.toDto(book);
 

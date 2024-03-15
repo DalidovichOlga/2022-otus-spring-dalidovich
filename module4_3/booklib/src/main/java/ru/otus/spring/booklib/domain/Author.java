@@ -13,13 +13,13 @@ import lombok.Setter;
 @Getter
 @Setter
 public class Author {
-    @Column(name = "firstname", nullable = false)
+    @Column(name = "firstname" )
     private String firstName;
-    @Column(name = "lastname", nullable = false)
+    @Column(name = "lastname")
     private String lastName;
-    @Column(name = "middlename", nullable = false)
+    @Column(name = "middlename")
     private String middleName;
-    @Column(name = "shortname", nullable = false, unique = true)
+    @Column(name = "shortname", unique = true)
     private String shortName;
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

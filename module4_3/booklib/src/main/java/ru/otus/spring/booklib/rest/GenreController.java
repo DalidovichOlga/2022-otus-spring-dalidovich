@@ -13,18 +13,19 @@ import java.util.stream.Collectors;
 
 @RestController
 @RequiredArgsConstructor
+@RequestMapping("/api/genres")
 public class GenreController {
     private final GenreService service;
 
 
-    @GetMapping(value = "/api/genres")
+    @GetMapping()
     public ResponseEntity<List<GenreDto>> getAllGenres() {
         return ResponseEntity.ok().body(service.getAllGaner().stream()
                 .map(GenreDto::toDto)
                 .collect(Collectors.toList()));
     }
 
-    @PatchMapping("/api/genres/{id}")
+    @PatchMapping("/{id}")
     public ResponseEntity<GenreDto> updateGenreById(@PathVariable("id") long id,
                                                     @RequestParam(value = "genreName") String genreName) throws LibraryError {
 

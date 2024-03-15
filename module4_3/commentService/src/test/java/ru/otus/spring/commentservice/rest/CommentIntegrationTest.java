@@ -47,7 +47,7 @@ public class CommentIntegrationTest {
         String expectedResult = mapper.writeValueAsString(comDto);
 
         given(service.getById(2L)).willReturn(new BookDto(2L, "123", "12312312", "123123"));
-        given(service.getById(25L)).willThrow(new LibraryError("BOOK_NOT_FOUND",""));
+        given(service.getById(25L)).willThrow(new LibraryError("book_not_found",""));
 
         mvc.perform(post("/api/book/2/comments").contentType(APPLICATION_JSON)
                 .content(expectedResult))

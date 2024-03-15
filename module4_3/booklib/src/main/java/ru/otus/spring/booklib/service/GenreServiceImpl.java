@@ -27,7 +27,7 @@ public class GenreServiceImpl implements GenreService {
         if (!existsByGenreId) {
             genreRepository.deleteById(genreId);
         } else
-            throw new LibraryError("GANRENAME_USED_IN_BOOK", "id=" + genreId);
+            throw new LibraryError("ganrename_used_in_book", "id=" + genreId);
 
     }
 
@@ -44,23 +44,23 @@ public class GenreServiceImpl implements GenreService {
         }
 
         return genreRepository.findById(genreId).orElseThrow(
-                () -> new LibraryError("GANRENAME_NOT_FOUND", String.valueOf(genreId)));
+                () -> new LibraryError("ganrename_not_found", String.valueOf(genreId)));
     }
 
     @Override
     @Transactional
     public Genre updateGenre(Genre genre) throws LibraryError {
         if ("".equals(genre.getGenreName()))
-            throw new LibraryError("GANRENAME_NOT_PASSED", "<empty>");
+            throw new LibraryError("ganrename_not_passed", "<empty>");
         if (genre.getId() == 0)
-            throw new LibraryError("GANRENAME_NOT_PASSED", "<empty>");
+            throw new LibraryError("ganrename_not_passed", "<empty>");
 
         List<Genre> genreList = genreRepository.findByGenreName(genre.getGenreName());
         if (!genreList.isEmpty()) {
             if (genreList.size() > 1)
-                throw new LibraryError("GANRENAME_ALLREADY_EXISTS", genre.getGenreName());
+                throw new LibraryError("ganrename_allready_exists", genre.getGenreName());
             else if (genreList.get(0).getId() != genre.getId()) {
-                throw new LibraryError("GANRENAME_ALLREADY_EXISTS", genre.getGenreName());
+                throw new LibraryError("ganrename_allready_exists", genre.getGenreName());
             } else return null;  // иначе ничего менять не надо все и так как хочет пользователь
 
         }
@@ -72,11 +72,11 @@ public class GenreServiceImpl implements GenreService {
     @Transactional
     public Genre createGenre(Genre genre) throws LibraryError {
         if ("".equals(genre.getGenreName())) {
-            throw new LibraryError("GANRENAME_NOT_PASSED", "<empty>");
+            throw new LibraryError("ganrename_not_passed", "<empty>");
         }
         List<Genre> genreList = genreRepository.findByGenreName(genre.getGenreName());
         if (!genreList.isEmpty()) {
-            throw new LibraryError("GANRENAME_ALLREADY_EXISTS", genre.getGenreName());
+            throw new LibraryError("ganrename_allready_exists", genre.getGenreName());
         }
         return genreRepository.save(genre);
     }

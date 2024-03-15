@@ -13,17 +13,17 @@ import javax.persistence.*;
 @Setter
 public class Comment {
 
-    @Column(name = "nick", nullable = false)
+    @Column(name = "nick")
     private String nick;
 
-    @Column(name = "commenttext", nullable = false)
+    @Column(name = "commenttext")
     private String commentText;
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
 
-    @Column(name = "bookid", nullable = false)
+    @Column(name = "bookid")
     private long bookId;
 
     public Comment(String nick, String commentText, long bookId, long id) {

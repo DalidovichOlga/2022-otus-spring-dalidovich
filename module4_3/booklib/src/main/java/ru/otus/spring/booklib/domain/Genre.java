@@ -14,7 +14,7 @@ import javax.persistence.*;
 @Setter
 public class Genre {
 
-    @Column(name = "genrename", nullable = false, unique = true)
+    @Column(name = "genrename", unique = true)
     private String genreName;
 
     @Id

@@ -36,9 +36,6 @@ management:
     health:
       show-details: always
 
-logging:
-  file:
-    path: ./logs
 h2:
   console:
     enabled: true
@@ -50,3 +47,4 @@ commentsrv:
   password: ${TECH_PAROL:"123456"}
   host: ${BOOK_SERVICE_NAME:"http://localhost"}
   port: ${BOOK_SERVICE_PORT:"8080"}
+

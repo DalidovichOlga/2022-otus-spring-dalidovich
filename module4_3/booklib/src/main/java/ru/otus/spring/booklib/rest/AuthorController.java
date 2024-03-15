@@ -14,17 +14,18 @@ import java.util.stream.Collectors;
 
 @RestController
 @RequiredArgsConstructor
+@RequestMapping("/api/authors")
 public class AuthorController {
     private final AuthorService service;
 
-    @GetMapping(value = "/api/authors")
+    @GetMapping()
     public ResponseEntity<List<AuthorDto>> getAllBooks() {
         return ResponseEntity.ok().body(service.getAllAuthor().stream()
                 .map(AuthorDto::toDto)
                 .collect(Collectors.toList()));
     }
 
-    @GetMapping("/api/authors/{id}")
+    @GetMapping("/{id}")
     public ResponseEntity<AuthorDto> getAuthorById(@PathVariable("id") long id) throws LibraryError {
 
         Author author = service.getAuthorByParam( id);
@@ -32,7 +33,7 @@ public class AuthorController {
         return ResponseEntity.ok().body(AuthorDto.toDto(author));
     }
 
-    @PatchMapping("/api/authors/{id}")
+    @PatchMapping("/{id}")
     public ResponseEntity<AuthorDto> updateAuthorById(@PathVariable("id") long id,
                                                       @RequestParam(value = "lastName", required = false, defaultValue = "") String lastName,
                                                       @RequestParam(value = "firstName", required = false, defaultValue = "") String firstName,

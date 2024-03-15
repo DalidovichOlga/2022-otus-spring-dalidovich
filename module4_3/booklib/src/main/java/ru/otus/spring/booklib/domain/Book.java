@@ -15,7 +15,7 @@ import javax.persistence.*;
         attributeNodes = {@NamedAttributeNode("author"), @NamedAttributeNode("genre")})
 public class Book {
 
-    @Column(name = "title", nullable = false, unique = true)
+    @Column(name = "title",  unique = true)
     private String title;
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
