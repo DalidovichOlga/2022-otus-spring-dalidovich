@@ -1,0 +1,27 @@
+spring:
+  datasource:
+    url: jdbc:h2:mem:testdb
+    initialization-mode: always
+
+  jpa:
+    generate-ddl: false
+    hibernate:
+      ddl-auto: none
+
+    show-sql: true
+  liquibase:
+    changeLog: classpath:/db/changelog/changelog.xml
+  messages:
+    basename: i18n/messages
+  mvc:
+    hiddenmethod:
+      filter:
+        enabled: true
+
+h2:
+  console:
+    enabled: true
+settings:
+  local: ru-RU
+
+
