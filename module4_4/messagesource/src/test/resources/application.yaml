@@ -1,0 +1,5 @@
+
+kafkasender:
+  server: ${KAFKA_SERVER:localhost:9092}
+  pollTime: ${KAFKA_POOLTIME:1000}
+  topic: ${KAFKA_TOPIC:"topic-msg-8"}
